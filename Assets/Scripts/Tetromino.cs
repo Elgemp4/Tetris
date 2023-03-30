@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,11 @@ public abstract class Tetromino : MonoBehaviour
 
     private GameObject blockPrefab;
 
-    public readonly Vector2 StartPosition = new Vector2(5, 22);
+    public readonly Vector2 StartPosition = new Vector2 (5, 22);
 
     protected GameObject[] blocks;
 
-    protected Vector2[][] rotations;
+    protected Vector2[,] rotations;
 
     private int RotationIndex = 0;
 
@@ -20,10 +21,8 @@ public abstract class Tetromino : MonoBehaviour
     {
         this.transform.position = StartPosition;
 
-        blockPrefab = Resources.Load(@"Assets/Prefabs/Block.prefab") as GameObject;
+        blockPrefab = Resources.Load(@"Tetrominoes/Block") as GameObject;
         blockPrefab.GetComponent<SpriteRenderer>().color = GetColor();
-
-        InitializeRotations();
 
         GenerateRotations();
 
@@ -35,16 +34,6 @@ public abstract class Tetromino : MonoBehaviour
         this.transform.position += Vector3.down;
 
         ActualizeBlockPosition();
-    }
-
-    private void InitializeRotations()
-    {
-        rotations = new Vector2[4][];
-
-        for (int i = 0; i < NumberOfBlock; i++)
-        {
-            rotations[i] = new Vector2[NumberOfBlock];
-        }
     }
 
     private void InstantiateBlocks()
@@ -61,11 +50,10 @@ public abstract class Tetromino : MonoBehaviour
 
     private void ActualizeBlockPosition()
     {
-        Vector2[] selectedRotation = rotations[RotationIndex];
-
         for (int i = 0; i < NumberOfBlock; i++)
         {
-            blocks[i].transform.position = selectedRotation[i];
+            blocks[i].transform.position = this.transform.position;
+            blocks[i].transform.position += (Vector3)rotations[RotationIndex, i];
         }
     }
 
