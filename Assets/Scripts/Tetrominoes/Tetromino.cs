@@ -9,7 +9,7 @@ public abstract class Tetromino : MonoBehaviour
 
     private GameObject blockPrefab;
 
-    public readonly Vector2 StartPosition = new Vector2 (5, 22);
+    public readonly Vector2 StartPosition = new Vector2 (0, 22);
 
     protected GameObject[] blocks;
 
@@ -31,8 +31,10 @@ public abstract class Tetromino : MonoBehaviour
 
     public void MoveDown()
     {
-        this.transform.position += Vector3.down;
-
+        Debug.Log(this.transform.position);
+        transform.position = (Vector2)this.transform.position + Vector2.down;
+        Debug.Log(this.transform.position);
+        Debug.Log("desecnd");
         ActualizeBlockPosition();
     }
 
@@ -50,8 +52,16 @@ public abstract class Tetromino : MonoBehaviour
 
     private void ActualizeBlockPosition()
     {
+        if (blocks == null || blocks.Length == 0)
+        {
+            return;
+        }
+
+        Debug.Log(blocks.Length);
         for (int i = 0; i < NumberOfBlock; i++)
         {
+            Debug.Log(i);
+            Debug.Log("Rotation : " + RotationIndex);
             blocks[i].transform.position = this.transform.position;
             blocks[i].transform.position += (Vector3)rotations[RotationIndex, i];
         }
@@ -61,7 +71,7 @@ public abstract class Tetromino : MonoBehaviour
     {
         if (RotationIndex == 0)
         {
-            RotationIndex = NumberOfBlock - 1;
+            RotationIndex = rotations.Length - 1;
             return;
         }
 
@@ -69,16 +79,15 @@ public abstract class Tetromino : MonoBehaviour
     }
     public void RotateRight()
     {
-        RotationIndex = (RotationIndex + 1) % NumberOfBlock;
+        RotationIndex = (RotationIndex + 1) % rotations.Length;
     }
 
     protected abstract Color GetColor();
 
     protected abstract void GenerateRotations();
 
-    // Update is called once per frame
     private void Update()
     {
-        
+        //MoveDown();
     }
 }

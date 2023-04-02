@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private Score score;
+
+    private Playfield playfield;
+
     void Start()
     {
-        
+        score = Score.Instance;
+        playfield = Playfield.Instance;
+
+        StartCoroutine(GameTick());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator GameTick()
     {
-        
+        while (true)
+        {
+            yield return new WaitForSeconds( (60f-score.Level) / 60);
+            playfield.ExecuteGameTick();
+        }
     }
 }
