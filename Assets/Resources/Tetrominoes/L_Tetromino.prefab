@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4459498948007897740}
   - component: {fileID: 2289993459440024370}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: L_Tetromino
   m_TagString: Untagged
   m_Icon: {fileID: 0}

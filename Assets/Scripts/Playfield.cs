@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Playfield : MonoBehaviour
 {
@@ -13,7 +15,8 @@ public class Playfield : MonoBehaviour
     [SerializeField]
     private int Width, Height;
 
-    private Tetromino CurrentFallingTetromino;
+    public Tetromino CurrentFallingTetromino { private set; get; }
+
 
     
     void Start()
@@ -22,14 +25,40 @@ public class Playfield : MonoBehaviour
 
         tetrominoesBar = TetrominoesBar.Instance;
 
+        BlockGrid = new GameObject[Height, Width];
+
+
         InstantiateNextTetromino();
+    }
+
+    public bool HasLanded() 
+    {
+        foreach (GameObject block in CurrentFallingTetromino.blocks) 
+        {
+            Vector2 blockPosition = (Vector2)block.transform.position;
+
+            //Debug.Log("MaxY : " + BlockGrid.GetLength(0));
+            //Debug.Log("Y : " + (int)blockPosition.y);
+            //Debug.Log("MaxX : " + BlockGrid.GetLength(1));
+            //Debug.Log("X : " + (int)blockPosition.x);
+
+            if (blockPosition.y == 0 || BlockGrid[(int)blockPosition.y - 1, (int)blockPosition.x] != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void PlaceTetromino()
     {
+        foreach (GameObject block in CurrentFallingTetromino.blocks)
+        {
+            this.BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = Instantiate(block, block.transform.position, block.transform.rotation, this.transform);
+        }
 
-
-        InstantiateNextTetromino();
+        Destroy(CurrentFallingTetromino.gameObject);
     }
 
     private void InstantiateNextTetromino()
@@ -37,13 +66,70 @@ public class Playfield : MonoBehaviour
         GameObject tetromino = tetrominoesBar.GetNextTetromino();
 
         CurrentFallingTetromino = Instantiate(tetromino).GetComponent<Tetromino>();
-
-
     }
 
-    public void ExecuteGameTick()
+    public void TryMoveLeft()
     {
-        Debug.Log("tick");
-        CurrentFallingTetromino.MoveDown();
+        CurrentFallingTetromino.MoveLeft();
+
+        if (!IsInBound() || IsOverlapping()) 
+        { 
+            CurrentFallingTetromino.MoveRight();
+        }
+    }
+
+    public void TryMoveRight()
+    {
+        CurrentFallingTetromino.MoveRight();
+
+        if (!IsInBound() || IsOverlapping())
+        {
+            CurrentFallingTetromino.MoveLeft();
+        }
+    }
+
+    private bool IsOverlapping()
+    {
+        foreach (GameObject block in CurrentFallingTetromino.blocks)
+        {
+            Vector3 position = block.transform.position;
+
+            if (BlockGrid[(int)position.y, (int)position.x] != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsInBound()
+    {
+        foreach (GameObject block in CurrentFallingTetromino.blocks)
+        { 
+            Vector3 position = block.transform.position;
+
+            if (position.x < 0 || position.x >= 10 || position.y < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void TryMoveDown()
+    {
+        if (HasLanded())
+        {
+            PlaceTetromino();
+
+            InstantiateNextTetromino();
+        }
+        else 
+        {
+            CurrentFallingTetromino.MoveDown();
+        }
+        
     }
 }
