@@ -16,6 +16,6 @@ public class S_Tetromino : Tetromino
 
     protected override Color GetColor()
     {
-        return new Color(255, 0, 255, 255);
+        return new Color(0, 1, 0, 1);
     }
 }

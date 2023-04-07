@@ -12,44 +12,30 @@ public class Game : MonoBehaviour
 
     private Coroutine GameLoopCoroutine, MovementCoroutine, FallCoroutine;
 
-    private bool WantToSoftDrop;
-
     private void Awake()
     {
         InGameControls = new InGameControls();
 
         InGameControls.Enable();
 
-        InGameControls.Movement.RotateLeft.performed += _ => playfield.CurrentFallingTetromino.RotateLeft();
+        InGameControls.Movement.RotateLeft.performed += _ => playfield.TryRotateLeft();
 
-        InGameControls.Movement.RotateRight.performed += _ => playfield.CurrentFallingTetromino.RotateRight();
+        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotateLeft();
 
-        InGameControls.Movement.MoveRight.performed += _ =>
-        {
-            playfield.TryMoveRight();
-            StopCoroutine(MovementCoroutine);
-            MovementCoroutine = StartCoroutine(MovementTick());
-        };
+        InGameControls.Movement.MoveRight.performed += _ => StartMoving();
 
-        InGameControls.Movement.MoveLeft.performed += _ =>
-        {
-            playfield.TryMoveLeft();
-            StopCoroutine(MovementCoroutine);
-            MovementCoroutine = StartCoroutine(MovementTick());
-        };
+        InGameControls.Movement.MoveLeft.performed += _ => StartMoving();
 
         InGameControls.Movement.SoftDrop.performed += _ =>
         {
-            playfield.TryMoveDown();
-
-            Debug.Log("rest");
-
-            StopCoroutine(GameLoopCoroutine);
-            GameLoopCoroutine = StartCoroutine(GameTick());
-
-            StopCoroutine(FallCoroutine);
+            if (FallCoroutine != null)
+            {
+                StopCoroutine(FallCoroutine);
+            }
             FallCoroutine = StartCoroutine(FallTick());
         };
+
+        InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
     }
 
     void Start()
@@ -65,12 +51,20 @@ public class Game : MonoBehaviour
 
     }
 
+    private void StartMoving()
+    {
+        if (MovementCoroutine != null)
+        {
+            StopCoroutine(MovementTick());
+        }
+
+        MovementCoroutine = StartCoroutine(MovementTick());
+    }
+
     IEnumerator MovementTick()
     {
-        while (true)
+        while (InGameControls.Movement.MoveLeft.IsPressed() || InGameControls.Movement.MoveRight.IsPressed())
         {
-            yield return new WaitForSeconds(0.15f);
-
             if (InGameControls.Movement.MoveLeft.IsPressed())
             {
                 playfield.TryMoveLeft();
@@ -80,25 +74,22 @@ public class Game : MonoBehaviour
             {
                 playfield.TryMoveRight();
             }
+
+            yield return new WaitForSeconds(0.15f);
         }
     }
 
     IEnumerator FallTick()
     {
-        while (true)
+        while (InGameControls.Movement.SoftDrop.IsPressed())
         {
+            playfield.TryMoveDown();
+
+            StopCoroutine(GameLoopCoroutine);
+            GameLoopCoroutine = StartCoroutine(GameTick());
+
             yield return new WaitForSeconds(0.2f);
-
-            if (InGameControls.Movement.SoftDrop.IsPressed())
-            {
-                playfield.TryMoveDown();
-                StopCoroutine(GameLoopCoroutine);
-                GameLoopCoroutine = StartCoroutine(GameTick());
-
-                WantToSoftDrop = false;
-            }
         }
-        
     }
 
 

@@ -8,12 +8,12 @@ public class O_Tetromino : Tetromino
     {
         rotations = new Vector2[,]
         {
-            { Vector2.zero, Vector2.right, Vector2.down, Vector2.right + Vector2.down},
+            { Vector2.zero, Vector2.left, Vector2.down, Vector2.left + Vector2.down},
         };
     }
 
     protected override Color GetColor()
     {
-        return new Color(255, 255, 0, 255);
+        return new Color(1, 1, 0, 1);
     }
 }

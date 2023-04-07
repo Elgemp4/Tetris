@@ -39,6 +39,12 @@ public abstract class Tetromino : MonoBehaviour
         ActualizeBlockPosition();
     }
 
+    public void MoveUp()
+    {
+        transform.position = (Vector2)this.transform.position + Vector2.up;
+        ActualizeBlockPosition();
+    }
+
     private void InstantiateBlocks()
     {
         blocks = new GameObject[NumberOfBlock];
@@ -92,6 +98,7 @@ public abstract class Tetromino : MonoBehaviour
     { 
         this.transform.position = (Vector2)this.transform.position + Vector2.left;
     }
+
 
     public void MoveRight()
     {

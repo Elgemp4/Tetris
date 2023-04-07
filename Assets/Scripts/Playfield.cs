@@ -8,7 +8,7 @@ public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
 
-    private TetrominoesBar tetrominoesBar;
+    private PieceSequence tetrominoesBar;
 
     private GameObject[,] BlockGrid;
 
@@ -23,7 +23,7 @@ public class Playfield : MonoBehaviour
     {
         Instance = this;
 
-        tetrominoesBar = TetrominoesBar.Instance;
+        tetrominoesBar = PieceSequence.Instance;
 
         BlockGrid = new GameObject[Height, Width];
 
@@ -36,11 +36,6 @@ public class Playfield : MonoBehaviour
         foreach (GameObject block in CurrentFallingTetromino.blocks) 
         {
             Vector2 blockPosition = (Vector2)block.transform.position;
-
-            //Debug.Log("MaxY : " + BlockGrid.GetLength(0));
-            //Debug.Log("Y : " + (int)blockPosition.y);
-            //Debug.Log("MaxX : " + BlockGrid.GetLength(1));
-            //Debug.Log("X : " + (int)blockPosition.x);
 
             if (blockPosition.y == 0 || BlockGrid[(int)blockPosition.y - 1, (int)blockPosition.x] != null)
             {
@@ -86,6 +81,36 @@ public class Playfield : MonoBehaviour
         {
             CurrentFallingTetromino.MoveLeft();
         }
+    }
+
+    public void TryRotateLeft()
+    { 
+        CurrentFallingTetromino.RotateLeft();
+
+        if (!IsInBound() || IsOverlapping())
+        {
+            CurrentFallingTetromino.RotateRight();
+        }
+    }
+
+    public void TryRotateRight()
+    {
+        CurrentFallingTetromino.RotateRight();
+
+        if (!IsInBound() || IsOverlapping())
+        {
+            CurrentFallingTetromino.RotateLeft();
+        }
+    }
+
+    public void HardDrop()
+    {
+        while (!HasLanded())
+        {
+            TryMoveDown();
+        }
+
+        TryMoveDown();
     }
 
     private bool IsOverlapping()

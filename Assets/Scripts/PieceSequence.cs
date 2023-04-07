@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TetrominoesBar : MonoBehaviour
+public class PieceSequence : MonoBehaviour
 {
-    public static TetrominoesBar Instance;
+    public static PieceSequence Instance;
 
     private Queue<GameObject> NextTetrominoes;
 
@@ -14,20 +13,41 @@ public class TetrominoesBar : MonoBehaviour
 
         NextTetrominoes = new Queue<GameObject>();
 
-        //Debug.Log("Creation des tetrominoes");
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 2; i++)
         {
-            CreateRandomTetromino();
+            CreateTetrominoBag();
         }
     }
 
-    private void CreateRandomTetromino()
+    private void CreateTetrominoBag()
     {
-        int choosenIndex = Mathf.FloorToInt(Random.value * 7);
+        int[] bag = new int[7];
+        
+        for(int i = 0; i < bag.Length; i++) 
+        {
+            int index = Random.Range(0, bag.Length);
 
+            if (bag[index] == 0)
+            {
+                bag[index] = i;
+            }
+            else 
+            {
+                i--;
+            }
+        }
+
+        foreach(int index in bag)
+        {
+            CreateTetromino(index);
+        }
+    }
+
+    private void CreateTetromino(int index)
+    {
         string choosenTetromino = "";
 
-        switch (choosenIndex)
+        switch (index)
         {
             case 0:
                 choosenTetromino = "I_Tetromino";
@@ -59,9 +79,12 @@ public class TetrominoesBar : MonoBehaviour
 
     public GameObject GetNextTetromino()
     {
-        //Debug.Log("Next tetromino");
         GameObject nextTetromino = NextTetrominoes.Dequeue();
-        CreateRandomTetromino();
+
+        if(NextTetrominoes.Count <= 7 ) 
+        {
+            CreateTetrominoBag();
+        }
         return nextTetromino;
     }
 }

@@ -17,6 +17,6 @@ public class Z_Tetromino : Tetromino
 
     protected override Color GetColor()
     {
-        return new Color(255, 0, 0, 255);
+        return new Color(1, 0, 0, 1);
     }
 }
