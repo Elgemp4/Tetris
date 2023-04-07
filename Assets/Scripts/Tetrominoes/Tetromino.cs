@@ -21,8 +21,6 @@ public abstract class Tetromino : MonoBehaviour
 
     private void Start()
     {
-        this.transform.position = StartPosition;
-
         this.playfield = Playfield.Instance;
 
         blockPrefab = Resources.Load(@"Tetrominoes/Block") as GameObject;
@@ -31,6 +29,11 @@ public abstract class Tetromino : MonoBehaviour
         GenerateRotations();
 
         InstantiateBlocks();
+    }
+
+    public void SetAtStart()
+    {
+        this.transform.position = StartPosition;
     }
 
     public void MoveDown()

@@ -8,7 +8,7 @@ public class O_Tetromino : Tetromino
     {
         rotations = new Vector2[,]
         {
-            { Vector2.zero, Vector2.left, Vector2.down, Vector2.left + Vector2.down},
+            { Vector2.zero, Vector2.left, Vector2.up, Vector2.left + Vector2.up},
         };
     }
 

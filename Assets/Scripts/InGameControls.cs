@@ -85,17 +85,6 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""b711d513-6a52-42dd-ae8a-8b239a0ce221"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""RotateRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""2e24cf18-e9ff-4b2c-a1b7-7d30e4d210fb"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
@@ -173,19 +162,30 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""feced597-0a8b-4d44-b2e8-ee56b1dd4f54"",
-                    ""path"": ""<Keyboard>/z"",
+                    ""id"": ""214a38c5-d5c1-4d72-9005-6d96111fe1f4"",
+                    ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""RotateLeft"",
+                    ""action"": ""RotateRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fd781f0c-a25c-4a2e-95eb-9064d9ec8c51"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""id"": ""427d9ad6-e960-4ce0-b1b5-fc753675fa3a"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""RotateRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c49db815-dcc4-42df-b07b-db7c9e231717"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",

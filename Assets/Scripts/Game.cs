@@ -20,7 +20,7 @@ public class Game : MonoBehaviour
 
         InGameControls.Movement.RotateLeft.performed += _ => playfield.TryRotateLeft();
 
-        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotateLeft();
+        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotateRight();
 
         InGameControls.Movement.MoveRight.performed += _ => StartMoving();
 

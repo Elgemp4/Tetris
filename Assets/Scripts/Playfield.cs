@@ -16,8 +16,6 @@ public class Playfield : MonoBehaviour
     private int Width, Height;
 
     public Tetromino CurrentFallingTetromino { private set; get; }
-
-
     
     void Start()
     {
@@ -28,7 +26,7 @@ public class Playfield : MonoBehaviour
         BlockGrid = new GameObject[Height, Width];
 
 
-        InstantiateNextTetromino();
+        GetNextTetromino();
     }
 
     public bool HasLanded() 
@@ -56,11 +54,11 @@ public class Playfield : MonoBehaviour
         Destroy(CurrentFallingTetromino.gameObject);
     }
 
-    private void InstantiateNextTetromino()
+    private void GetNextTetromino()
     {
-        GameObject tetromino = tetrominoesBar.GetNextTetromino();
+        CurrentFallingTetromino = tetrominoesBar.GetNextTetromino().GetComponent<Tetromino>();
 
-        CurrentFallingTetromino = Instantiate(tetromino).GetComponent<Tetromino>();
+        CurrentFallingTetromino.SetAtStart();
     }
 
     public void TryMoveLeft()
@@ -113,6 +111,21 @@ public class Playfield : MonoBehaviour
         TryMoveDown();
     }
 
+    public void TryMoveDown()
+    {
+        if (HasLanded())
+        {
+            PlaceTetromino();
+
+            GetNextTetromino();
+        }
+        else 
+        {
+            CurrentFallingTetromino.MoveDown();
+        }
+        
+    }
+
     private bool IsOverlapping()
     {
         foreach (GameObject block in CurrentFallingTetromino.blocks)
@@ -131,7 +144,7 @@ public class Playfield : MonoBehaviour
     private bool IsInBound()
     {
         foreach (GameObject block in CurrentFallingTetromino.blocks)
-        { 
+        {
             Vector3 position = block.transform.position;
 
             if (position.x < 0 || position.x >= 10 || position.y < 0)
@@ -141,20 +154,5 @@ public class Playfield : MonoBehaviour
         }
 
         return true;
-    }
-
-    public void TryMoveDown()
-    {
-        if (HasLanded())
-        {
-            PlaceTetromino();
-
-            InstantiateNextTetromino();
-        }
-        else 
-        {
-            CurrentFallingTetromino.MoveDown();
-        }
-        
     }
 }

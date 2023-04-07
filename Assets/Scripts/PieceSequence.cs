@@ -7,16 +7,22 @@ public class PieceSequence : MonoBehaviour
 
     private Queue<GameObject> NextTetrominoes;
 
+    private List<GameObject> VisisbleTetrominoes;
+
     void Start()
     {
         Instance = this;
 
         NextTetrominoes = new Queue<GameObject>();
 
+        VisisbleTetrominoes = new List<GameObject>();
+
         for (int i = 0; i < 2; i++)
         {
             CreateTetrominoBag();
         }
+
+        InstantiateFollowingTetrominoes();
     }
 
     private void CreateTetrominoBag()
@@ -77,14 +83,48 @@ public class PieceSequence : MonoBehaviour
         NextTetrominoes.Enqueue(Resources.Load("Tetrominoes/" + choosenTetromino) as GameObject);
     }
 
+    private void InstantiateFollowingTetrominoes()
+    {
+        for (int i = 0; i < 5; i++) 
+        {
+            InstintateNextVisibleTetromino(i);
+        }
+    }
+
+    private void InstintateNextVisibleTetromino(int position)
+    {
+        GameObject tetrominoe = Instantiate(NextTetrominoes.Dequeue());
+
+        tetrominoe.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - 3 * position);
+
+        VisisbleTetrominoes.Add(tetrominoe);
+    }
+
+    private void ShiftVisibleTetrominoes()
+    { 
+        foreach(GameObject tetrominoes in VisisbleTetrominoes)
+        {
+            tetrominoes.transform.position += Vector3.up * 3f;
+        }
+    }
+
     public GameObject GetNextTetromino()
     {
-        GameObject nextTetromino = NextTetrominoes.Dequeue();
+        GameObject nextTetromino = VisisbleTetrominoes[0];
+        VisisbleTetrominoes.RemoveAt(0);
 
-        if(NextTetrominoes.Count <= 7 ) 
+        
+
+        ShiftVisibleTetrominoes();
+
+        InstintateNextVisibleTetromino(4);
+
+        if(NextTetrominoes.Count + NextTetrominoes.Count <= 7 ) 
         {
             CreateTetrominoBag();
         }
+
+        Debug.Log(nextTetromino);
         return nextTetromino;
     }
 }
