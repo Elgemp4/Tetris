@@ -8,6 +8,8 @@ public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
 
+    private Audio audio;
+
     private PieceSequence tetrominoesBar;
 
     private GameObject[,] BlockGrid;
@@ -20,6 +22,8 @@ public class Playfield : MonoBehaviour
     void Start()
     {
         Instance = this;
+
+        audio = Audio.Instance;
 
         tetrominoesBar = PieceSequence.Instance;
 
@@ -65,9 +69,13 @@ public class Playfield : MonoBehaviour
     {
         CurrentFallingTetromino.MoveLeft();
 
-        if (!IsInBound() || IsOverlapping()) 
-        { 
+        if (!IsInBound() || IsOverlapping())
+        {
             CurrentFallingTetromino.MoveRight();
+        }
+        else 
+        {
+            audio.PlayMoveAudio();
         }
     }
 
@@ -79,6 +87,10 @@ public class Playfield : MonoBehaviour
         {
             CurrentFallingTetromino.MoveLeft();
         }
+        else 
+        {
+            audio.PlayMoveAudio();
+        }
     }
 
     public void TryRotateLeft()
@@ -88,6 +100,10 @@ public class Playfield : MonoBehaviour
         if (!IsInBound() || IsOverlapping())
         {
             CurrentFallingTetromino.RotateRight();
+        }
+        else
+        {
+            audio.PlayRotateAudio();
         }
     }
 
@@ -99,6 +115,10 @@ public class Playfield : MonoBehaviour
         {
             CurrentFallingTetromino.RotateLeft();
         }
+        else
+        {
+            audio.PlayRotateAudio();
+        }
     }
 
     public void HardDrop()
@@ -109,6 +129,8 @@ public class Playfield : MonoBehaviour
         }
 
         TryMoveDown();
+
+        audio.PlayHardDropAudio();
     }
 
     public void TryMoveDown()
