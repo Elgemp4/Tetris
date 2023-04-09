@@ -15,6 +15,18 @@ public class Audio : MonoBehaviour
     [SerializeField]
     AudioSource hardDropAudio;
 
+    [SerializeField]
+    AudioSource singleLineClearedAudio;
+
+    [SerializeField]
+    AudioSource doubleLineClearedAudio;
+
+    [SerializeField]
+    AudioSource tripleLineClearedAudio;
+
+    [SerializeField]
+    AudioSource tetrisLineClearedAudio;
+
 
     public void PlayMoveAudio()
     {
@@ -29,6 +41,25 @@ public class Audio : MonoBehaviour
     public void PlayHardDropAudio()
     {
         hardDropAudio.Play();
+    }
+
+    public void PlayLineClear(int numLines)
+    {
+        switch(numLines) 
+        {
+            case 1:
+                singleLineClearedAudio.Play();
+                break;
+            case 2:
+                doubleLineClearedAudio.Play();
+                break;
+            case 3:
+                tripleLineClearedAudio.Play();
+                break;
+            case 4:
+                tetrisLineClearedAudio.Play();
+                break;
+        }
     }
 
     void Start()

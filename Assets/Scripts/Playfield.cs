@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
+
+    private CinemachineImpulseSource source;
 
     private Audio audio;
 
@@ -22,6 +26,8 @@ public class Playfield : MonoBehaviour
     void Start()
     {
         Instance = this;
+
+        source = GetComponent<CinemachineImpulseSource>();
 
         audio = Audio.Instance;
 
@@ -56,6 +62,113 @@ public class Playfield : MonoBehaviour
         }
 
         Destroy(CurrentFallingTetromino.gameObject);
+        source.GenerateImpulseWithForce(0.05f);
+    }
+
+    public void CheckForDestroyedLines()
+    {
+        int destroyedLines = 0;
+
+        int highestClearedLine = 0;
+
+        for (int y =  0; y < Height; y++)
+        {
+            if (IsLineFull(y))
+            {
+                DestroyLine(y);
+                destroyedLines++;
+                highestClearedLine = y;
+            }
+        }
+
+        Debug.Log("Destroyed : " + destroyedLines);
+        Debug.Log("Highest : " + highestClearedLine);
+        if (destroyedLines > 0)
+        {
+            audio.PlayLineClear(destroyedLines);
+
+            source.GenerateImpulseWithForce(destroyedLines * 0.5f);
+
+            DropBlocks(highestClearedLine);
+        }
+        
+    }
+
+    private bool IsLineFull(int y)
+    { 
+        for(int x = 0; x < Width; x++) 
+        {
+            if (BlockGrid[y, x] == null) 
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void DestroyLine(int y)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            Destroy(BlockGrid[y, x]);
+            BlockGrid[y, x] = null;
+        }
+    }
+
+    public void DropBlocks(int highestClearedLine)
+    {
+        List<Aglomerate> blockAglomerate = new List<Aglomerate>();
+
+        for(int x = 0; x < Width; x++) 
+        {
+            if (BlockGrid[highestClearedLine + 1, x] != null)
+            { 
+                List<GameObject> blocks = CreateAglomerate(highestClearedLine + 1, x);
+
+                blockAglomerate.Add(new Aglomerate(blocks));
+            }
+        }
+
+        foreach (Aglomerate aglomerate in blockAglomerate)
+        {
+            aglomerate.Drop();
+
+            foreach (GameObject block in aglomerate.blockList)
+            {
+                BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = block;
+            }
+        }
+    }
+
+    public List<GameObject> CreateAglomerate(int y, int x)
+    {
+        List<GameObject> aglomerateBlocks = new List<GameObject>();
+
+        GameObject block = null;
+
+        if (IsInBound(x, y)) 
+        {
+            block = BlockGrid[y, x];
+        }
+        
+        if (block != null) 
+        {
+            aglomerateBlocks.Add(block);
+            BlockGrid[y, x] = null;
+
+            aglomerateBlocks.AddRange(CreateAglomerate(y + 1, x));
+            aglomerateBlocks.AddRange(CreateAglomerate(y - 1, x));
+            aglomerateBlocks.AddRange(CreateAglomerate(y, x + 1));
+            aglomerateBlocks.AddRange(CreateAglomerate(y, x - 1));
+        }
+        
+        return aglomerateBlocks;
+    }
+
+    public bool IsABlockPresent(int x, int y)
+    {
+        return BlockGrid[y, x] != null;
     }
 
     private void GetNextTetromino()
@@ -69,7 +182,7 @@ public class Playfield : MonoBehaviour
     {
         CurrentFallingTetromino.MoveLeft();
 
-        if (!IsInBound() || IsOverlapping())
+        if (!IsTetrominoInBound() || IsOverlapping())
         {
             CurrentFallingTetromino.MoveRight();
         }
@@ -83,7 +196,7 @@ public class Playfield : MonoBehaviour
     {
         CurrentFallingTetromino.MoveRight();
 
-        if (!IsInBound() || IsOverlapping())
+        if (!IsTetrominoInBound() || IsOverlapping())
         {
             CurrentFallingTetromino.MoveLeft();
         }
@@ -97,7 +210,7 @@ public class Playfield : MonoBehaviour
     { 
         CurrentFallingTetromino.RotateLeft();
 
-        if (!IsInBound() || IsOverlapping())
+        if (!IsTetrominoInBound() || IsOverlapping())
         {
             CurrentFallingTetromino.RotateRight();
         }
@@ -111,7 +224,7 @@ public class Playfield : MonoBehaviour
     {
         CurrentFallingTetromino.RotateRight();
 
-        if (!IsInBound() || IsOverlapping())
+        if (!IsTetrominoInBound() || IsOverlapping())
         {
             CurrentFallingTetromino.RotateLeft();
         }
@@ -130,6 +243,8 @@ public class Playfield : MonoBehaviour
 
         TryMoveDown();
 
+        source.GenerateImpulseWithForce(0.15f);
+
         audio.PlayHardDropAudio();
     }
 
@@ -138,6 +253,8 @@ public class Playfield : MonoBehaviour
         if (HasLanded())
         {
             PlaceTetromino();
+
+            CheckForDestroyedLines();
 
             GetNextTetromino();
         }
@@ -163,18 +280,23 @@ public class Playfield : MonoBehaviour
         return false;
     }
 
-    private bool IsInBound()
+    private bool IsTetrominoInBound()
     {
         foreach (GameObject block in CurrentFallingTetromino.blocks)
         {
             Vector3 position = block.transform.position;
 
-            if (position.x < 0 || position.x >= 10 || position.y < 0)
+            if (!IsInBound((int)position.x, (int)position.y))
             {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private bool IsInBound(int x, int y)
+    {
+        return x >= 0 && x < 10 && y >= 0;
     }
 }

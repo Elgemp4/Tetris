@@ -63,6 +63,8 @@ public class Game : MonoBehaviour
 
     IEnumerator MovementTick()
     {
+        bool isTheFirstMove = true;
+
         while (InGameControls.Movement.MoveLeft.IsPressed() || InGameControls.Movement.MoveRight.IsPressed())
         {
             if (InGameControls.Movement.MoveLeft.IsPressed())
@@ -75,7 +77,9 @@ public class Game : MonoBehaviour
                 playfield.TryMoveRight();
             }
 
-            yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSeconds(isTheFirstMove ? 0.25f : 0.1f);
+
+            isTheFirstMove = false;
         }
     }
 
@@ -88,7 +92,7 @@ public class Game : MonoBehaviour
             StopCoroutine(GameLoopCoroutine);
             GameLoopCoroutine = StartCoroutine(GameTick());
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.05f);
         }
     }
 
