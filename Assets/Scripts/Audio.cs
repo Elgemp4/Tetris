@@ -7,40 +7,48 @@ public class Audio : MonoBehaviour
     public static Audio Instance;
 
     [SerializeField]
-    AudioSource moveAudio;
+    AudioSource MoveAudio;
 
     [SerializeField]
-    AudioSource rotateAudio;
+    AudioSource RotateAudio;
 
     [SerializeField]
-    AudioSource hardDropAudio;
+    AudioSource HardDropAudio;
 
     [SerializeField]
-    AudioSource singleLineClearedAudio;
+    AudioSource SingleLineClearedAudio;
 
     [SerializeField]
-    AudioSource doubleLineClearedAudio;
+    AudioSource DoubleLineClearedAudio;
 
     [SerializeField]
-    AudioSource tripleLineClearedAudio;
+    AudioSource TripleLineClearedAudio;
 
     [SerializeField]
-    AudioSource tetrisLineClearedAudio;
+    AudioSource TetrisLineClearedAudio;
+
+    [SerializeField]
+    AudioSource HoldAudio;
 
 
     public void PlayMoveAudio()
     {
-        moveAudio.Play();
+        MoveAudio.Play();
     }
 
     public void PlayRotateAudio()
     {
-        rotateAudio.Play();
+        RotateAudio.Play();
     }
 
     public void PlayHardDropAudio()
     {
-        hardDropAudio.Play();
+        HardDropAudio.Play();
+    }
+
+    public void PlayHoldAudio()
+    {
+        HoldAudio.Play();
     }
 
     public void PlayLineClear(int numLines)
@@ -48,16 +56,16 @@ public class Audio : MonoBehaviour
         switch(numLines) 
         {
             case 1:
-                singleLineClearedAudio.Play();
+                SingleLineClearedAudio.Play();
                 break;
             case 2:
-                doubleLineClearedAudio.Play();
+                DoubleLineClearedAudio.Play();
                 break;
             case 3:
-                tripleLineClearedAudio.Play();
+                TripleLineClearedAudio.Play();
                 break;
             case 4:
-                tetrisLineClearedAudio.Play();
+                TetrisLineClearedAudio.Play();
                 break;
         }
     }

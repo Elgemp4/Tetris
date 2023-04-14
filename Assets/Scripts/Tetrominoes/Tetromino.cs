@@ -31,6 +31,13 @@ public abstract class Tetromino : MonoBehaviour
         InstantiateBlocks();
     }
 
+    public void ResetRotation()
+    {
+        RotationIndex = 0;
+
+        ActualizeBlockPosition();
+    }
+
     public void SetAtStart()
     {
         this.transform.position = StartPosition;

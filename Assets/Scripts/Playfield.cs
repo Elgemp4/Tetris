@@ -5,21 +5,26 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
 
-    private CinemachineImpulseSource source;
+    private CinemachineImpulseSource CameraShakeSource;
 
-    private Audio audio;
+    private Audio AudioPlayer;
 
-    private PieceSequence tetrominoesBar;
+    private PieceSequence PieceSequence;
 
     private GameObject[,] BlockGrid;
 
+    private TetrominoHold TetrominoHold;
+
     [SerializeField]
     private int Width, Height;
+
+    private bool HaveHold = false;
 
     public Tetromino CurrentFallingTetromino { private set; get; }
     
@@ -27,11 +32,13 @@ public class Playfield : MonoBehaviour
     {
         Instance = this;
 
-        source = GetComponent<CinemachineImpulseSource>();
+        CameraShakeSource = GetComponent<CinemachineImpulseSource>();
 
-        audio = Audio.Instance;
+        AudioPlayer = Audio.Instance;
 
-        tetrominoesBar = PieceSequence.Instance;
+        PieceSequence = PieceSequence.Instance;
+
+        TetrominoHold = TetrominoHold.Instance;
 
         BlockGrid = new GameObject[Height, Width];
 
@@ -62,7 +69,8 @@ public class Playfield : MonoBehaviour
         }
 
         Destroy(CurrentFallingTetromino.gameObject);
-        source.GenerateImpulseWithForce(0.05f);
+
+        CameraShakeSource.GenerateImpulseWithForce(0.05f);
     }
 
     public void CheckForDestroyedLines()
@@ -85,9 +93,9 @@ public class Playfield : MonoBehaviour
         Debug.Log("Highest : " + highestClearedLine);
         if (destroyedLines > 0)
         {
-            audio.PlayLineClear(destroyedLines);
+            AudioPlayer.PlayLineClear(destroyedLines);
 
-            source.GenerateImpulseWithForce(destroyedLines * 0.5f);
+            CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
 
             DropBlocks(highestClearedLine);
         }
@@ -171,9 +179,25 @@ public class Playfield : MonoBehaviour
         return BlockGrid[y, x] != null;
     }
 
+    public void Hold()
+    {
+        if (HaveHold)
+        {
+            return;
+        }
+
+        Tetromino newTetromino = TetrominoHold.Switch(CurrentFallingTetromino);
+
+        HaveHold = true;
+
+        SetFallingTetrominoes(newTetromino);
+
+        AudioPlayer.PlayHoldAudio();
+    }
+
     private void GetNextTetromino()
     {
-        CurrentFallingTetromino = tetrominoesBar.GetNextTetromino().GetComponent<Tetromino>();
+        CurrentFallingTetromino = PieceSequence.GetNextTetromino().GetComponent<Tetromino>();
 
         CurrentFallingTetromino.SetAtStart();
     }
@@ -188,7 +212,7 @@ public class Playfield : MonoBehaviour
         }
         else 
         {
-            audio.PlayMoveAudio();
+            AudioPlayer.PlayMoveAudio();
         }
     }
 
@@ -202,7 +226,7 @@ public class Playfield : MonoBehaviour
         }
         else 
         {
-            audio.PlayMoveAudio();
+            AudioPlayer.PlayMoveAudio();
         }
     }
 
@@ -216,7 +240,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            audio.PlayRotateAudio();
+            AudioPlayer.PlayRotateAudio();
         }
     }
 
@@ -230,7 +254,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            audio.PlayRotateAudio();
+            AudioPlayer.PlayRotateAudio();
         }
     }
 
@@ -243,9 +267,9 @@ public class Playfield : MonoBehaviour
 
         TryMoveDown();
 
-        source.GenerateImpulseWithForce(0.15f);
+        CameraShakeSource.GenerateImpulseWithForce(0.15f);
 
-        audio.PlayHardDropAudio();
+        AudioPlayer.PlayHardDropAudio();
     }
 
     public void TryMoveDown()
@@ -257,6 +281,8 @@ public class Playfield : MonoBehaviour
             CheckForDestroyedLines();
 
             GetNextTetromino();
+
+            HaveHold = false;
         }
         else 
         {
@@ -298,5 +324,18 @@ public class Playfield : MonoBehaviour
     private bool IsInBound(int x, int y)
     {
         return x >= 0 && x < 10 && y >= 0;
+    }
+
+    public void SetFallingTetrominoes(Tetromino newTetromino)
+    {
+        if (newTetromino == null)
+        {
+            GetNextTetromino();
+            return;
+        }
+
+        CurrentFallingTetromino = newTetromino;
+
+        CurrentFallingTetromino.transform.position = CurrentFallingTetromino.StartPosition;
     }
 }

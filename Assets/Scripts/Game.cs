@@ -36,6 +36,8 @@ public class Game : MonoBehaviour
         };
 
         InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
+
+        InGameControls.Movement.Hold.performed += _ => playfield.Hold();
     }
 
     void Start()
@@ -50,6 +52,7 @@ public class Game : MonoBehaviour
         FallCoroutine = StartCoroutine(FallTick());
 
     }
+
 
     private void StartMoving()
     {

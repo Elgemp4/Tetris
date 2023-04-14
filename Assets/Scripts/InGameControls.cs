@@ -80,6 +80,15 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Hold"",
+                    ""type"": ""Button"",
+                    ""id"": ""c31917f6-4d00-476f-92fe-b670135b42d9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
                     ""action"": ""RotateLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f39bb82b-8472-421f-8f1f-fe76324f144b"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -218,6 +238,7 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
         m_Movement_MoveLeft = m_Movement.FindAction("MoveLeft", throwIfNotFound: true);
         m_Movement_HardDrop = m_Movement.FindAction("HardDrop", throwIfNotFound: true);
         m_Movement_SoftDrop = m_Movement.FindAction("SoftDrop", throwIfNotFound: true);
+        m_Movement_Hold = m_Movement.FindAction("Hold", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -283,6 +304,7 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_MoveLeft;
     private readonly InputAction m_Movement_HardDrop;
     private readonly InputAction m_Movement_SoftDrop;
+    private readonly InputAction m_Movement_Hold;
     public struct MovementActions
     {
         private @InGameControls m_Wrapper;
@@ -293,6 +315,7 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
         public InputAction @MoveLeft => m_Wrapper.m_Movement_MoveLeft;
         public InputAction @HardDrop => m_Wrapper.m_Movement_HardDrop;
         public InputAction @SoftDrop => m_Wrapper.m_Movement_SoftDrop;
+        public InputAction @Hold => m_Wrapper.m_Movement_Hold;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -320,6 +343,9 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
                 @SoftDrop.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnSoftDrop;
                 @SoftDrop.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnSoftDrop;
                 @SoftDrop.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnSoftDrop;
+                @Hold.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnHold;
+                @Hold.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnHold;
+                @Hold.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnHold;
             }
             m_Wrapper.m_MovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -342,6 +368,9 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
                 @SoftDrop.started += instance.OnSoftDrop;
                 @SoftDrop.performed += instance.OnSoftDrop;
                 @SoftDrop.canceled += instance.OnSoftDrop;
+                @Hold.started += instance.OnHold;
+                @Hold.performed += instance.OnHold;
+                @Hold.canceled += instance.OnHold;
             }
         }
     }
@@ -363,5 +392,6 @@ public partial class @InGameControls : IInputActionCollection2, IDisposable
         void OnMoveLeft(InputAction.CallbackContext context);
         void OnHardDrop(InputAction.CallbackContext context);
         void OnSoftDrop(InputAction.CallbackContext context);
+        void OnHold(InputAction.CallbackContext context);
     }
 }
