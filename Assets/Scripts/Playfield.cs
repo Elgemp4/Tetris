@@ -208,7 +208,8 @@ public class Playfield : MonoBehaviour
     {
         int destroyedLines = 0;
 
-        int highestClearedLine = 0;
+
+        List<int> clearedLines = new List<int>();
 
         for (int y = 0; y < Height; y++)
         {
@@ -216,7 +217,7 @@ public class Playfield : MonoBehaviour
             {
                 DestroyLine(y);
                 destroyedLines++;
-                highestClearedLine = y;
+                clearedLines.Add(y);
             }
         }
 
@@ -228,9 +229,13 @@ public class Playfield : MonoBehaviour
 
             CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
 
-            DropBlocks(highestClearedLine);
-        }
+            foreach(int line in clearedLines)
+            {
+                DropBlocks(line);
+            }
 
+            CheckForDestroyedLines();
+        }
     }
 
     private bool IsLineFull(int y)
