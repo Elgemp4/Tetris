@@ -94,7 +94,7 @@ public class Game : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds( (60f-score.Level) / 60);
+            yield return new WaitForSeconds( (60f-score.Level*2) / 60);
 
             playfield.TryMoveDown();
         }

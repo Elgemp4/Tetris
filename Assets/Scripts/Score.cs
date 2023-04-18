@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
@@ -14,6 +17,11 @@ public class Score : MonoBehaviour
 
     public bool HasLeveledUp { private set; get; }
 
+    [SerializeField]
+    private GameObject TextObject;
+
+    private TextMeshProUGUI DisplayedText;
+
     public static Dictionary<int, int> BaseScoreForBreakedLine = new Dictionary<int, int>()
     {
         { 1,40 },
@@ -26,19 +34,25 @@ public class Score : MonoBehaviour
     void Start()
     {
         Instance = this;
+
+        DisplayedText = TextObject.GetComponent<TextMeshProUGUI>();
+
+        RefreshText();
     }
 
-    public void AddScore(int level, int numberOfClearedLines)
+    public void AddScore(int numberOfClearedLines)
     {
         int scoreBase = BaseScoreForBreakedLine[numberOfClearedLines];
 
         this.HasLeveledUp = false;
 
-        this.ScoreCount += scoreBase * (level + 1);
+        this.ScoreCount += scoreBase * (Level + 1);
 
         this.ClearedLineCount += numberOfClearedLines;
 
         this.ComputeLevel();
+
+        RefreshText();
     }
 
     public void ComputeLevel()
@@ -49,5 +63,11 @@ public class Score : MonoBehaviour
             HasLeveledUp = true;
 
         Level = temp;
+    }
+
+    private void RefreshText()
+    {
+        DisplayedText.text = "Score: " + ScoreCount + "\n" + "Lines: " + ClearedLineCount + "\n" + "Level: " + Level;
+        Debug.Log("Text refreshed");
     }
 }

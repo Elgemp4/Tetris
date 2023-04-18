@@ -15,6 +15,8 @@ public class Playfield : MonoBehaviour
 
     private Audio AudioPlayer;
 
+    private Score score;
+
     private PieceSequence PieceSequence;
 
     private GameObject[,] BlockGrid;
@@ -45,6 +47,8 @@ public class Playfield : MonoBehaviour
         TetrominoHold = TetrominoHold.Instance;
 
         BlockGrid = new GameObject[Height, Width];
+
+        score = Score.Instance;
 
         GetNextTetromino();
 
@@ -94,11 +98,11 @@ public class Playfield : MonoBehaviour
             }
         }
 
-        Debug.Log("Destroyed : " + destroyedLines);
-        Debug.Log("Highest : " + highestClearedLine);
         if (destroyedLines > 0)
         {
             AudioPlayer.PlayLineClear(destroyedLines);
+
+            score.AddScore(destroyedLines);
 
             CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
 
