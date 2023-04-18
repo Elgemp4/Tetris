@@ -27,10 +27,14 @@ public class Playfield : MonoBehaviour
     private bool HaveHold = false;
 
     public Tetromino CurrentFallingTetromino { private set; get; }
-    
+
+    private Ghost_Tetromino GhostTetromino;
+
     void Start()
     {
         Instance = this;
+
+        GhostTetromino = Instantiate((GameObject)Resources.Load("Tetrominoes/Ghost_Tetromino")).GetComponent<Ghost_Tetromino>();
 
         CameraShakeSource = GetComponent<CinemachineImpulseSource>();
 
@@ -42,13 +46,14 @@ public class Playfield : MonoBehaviour
 
         BlockGrid = new GameObject[Height, Width];
 
-
         GetNextTetromino();
+
+        GhostTetromino.ShowAtTheBottom();
     }
 
-    public bool HasLanded() 
+    public bool HasLanded(Tetromino tetromino) 
     {
-        foreach (GameObject block in CurrentFallingTetromino.blocks) 
+        foreach (GameObject block in tetromino.blocks) 
         {
             Vector2 blockPosition = (Vector2)block.transform.position;
 
@@ -190,16 +195,14 @@ public class Playfield : MonoBehaviour
 
         HaveHold = true;
 
-        SetFallingTetrominoes(newTetromino);
+        SetFallingTetromino(newTetromino);
 
         AudioPlayer.PlayHoldAudio();
     }
 
     private void GetNextTetromino()
     {
-        CurrentFallingTetromino = PieceSequence.GetNextTetromino().GetComponent<Tetromino>();
-
-        CurrentFallingTetromino.SetAtStart();
+        SetFallingTetromino(PieceSequence.GetNextTetromino().GetComponent<Tetromino>());
     }
 
     public void TryMoveLeft()
@@ -213,6 +216,7 @@ public class Playfield : MonoBehaviour
         else 
         {
             AudioPlayer.PlayMoveAudio();
+            GhostTetromino.ShowAtTheBottom();
         }
     }
 
@@ -227,6 +231,7 @@ public class Playfield : MonoBehaviour
         else 
         {
             AudioPlayer.PlayMoveAudio();
+            GhostTetromino.ShowAtTheBottom();
         }
     }
 
@@ -241,6 +246,7 @@ public class Playfield : MonoBehaviour
         else
         {
             AudioPlayer.PlayRotateAudio();
+            GhostTetromino.ShowAtTheBottom();
         }
     }
 
@@ -255,12 +261,13 @@ public class Playfield : MonoBehaviour
         else
         {
             AudioPlayer.PlayRotateAudio();
+            GhostTetromino.ShowAtTheBottom();
         }
     }
 
     public void HardDrop()
     {
-        while (!HasLanded())
+        while (!HasLanded(CurrentFallingTetromino))
         {
             TryMoveDown();
         }
@@ -274,7 +281,7 @@ public class Playfield : MonoBehaviour
 
     public void TryMoveDown()
     {
-        if (HasLanded())
+        if (HasLanded(CurrentFallingTetromino))
         {
             PlaceTetromino();
 
@@ -326,7 +333,7 @@ public class Playfield : MonoBehaviour
         return x >= 0 && x < 10 && y >= 0;
     }
 
-    public void SetFallingTetrominoes(Tetromino newTetromino)
+    public void SetFallingTetromino(Tetromino newTetromino)
     {
         if (newTetromino == null)
         {
@@ -336,6 +343,10 @@ public class Playfield : MonoBehaviour
 
         CurrentFallingTetromino = newTetromino;
 
-        CurrentFallingTetromino.transform.position = CurrentFallingTetromino.StartPosition;
+        CurrentFallingTetromino.SetAtStart();
+
+        GhostTetromino.SetReplicated_Tetromino(CurrentFallingTetromino);
+
+        GhostTetromino.ShowAtTheBottom();
     }
 }

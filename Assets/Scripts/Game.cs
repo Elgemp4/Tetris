@@ -10,7 +10,7 @@ public class Game : MonoBehaviour
 
     private InGameControls InGameControls;
 
-    private Coroutine GameLoopCoroutine, MovementCoroutine, FallCoroutine;
+    private Coroutine GameLoopCoroutine;
 
     private void Awake()
     {
@@ -28,11 +28,9 @@ public class Game : MonoBehaviour
 
         InGameControls.Movement.SoftDrop.performed += _ =>
         {
-            if (FallCoroutine != null)
-            {
-                StopCoroutine(FallCoroutine);
-            }
-            FallCoroutine = StartCoroutine(FallTick());
+            StopCoroutine("FallTick");
+            
+            StartCoroutine(FallTick());
         };
 
         InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
@@ -46,22 +44,14 @@ public class Game : MonoBehaviour
         playfield = Playfield.Instance;
 
         GameLoopCoroutine = StartCoroutine(GameTick());
-
-        MovementCoroutine = StartCoroutine(MovementTick());
-
-        FallCoroutine = StartCoroutine(FallTick());
-
     }
 
 
     private void StartMoving()
     {
-        if (MovementCoroutine != null)
-        {
-            StopCoroutine(MovementTick());
-        }
+        StopCoroutine("MovementTick");
 
-        MovementCoroutine = StartCoroutine(MovementTick());
+        StartCoroutine("MovementTick");
     }
 
     IEnumerator MovementTick()
@@ -80,7 +70,7 @@ public class Game : MonoBehaviour
                 playfield.TryMoveRight();
             }
 
-            yield return new WaitForSeconds(isTheFirstMove ? 0.25f : 0.1f);
+            yield return new WaitForSeconds(isTheFirstMove ? 0.1f : 0.1f);
 
             isTheFirstMove = false;
         }

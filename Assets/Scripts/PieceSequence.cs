@@ -78,7 +78,7 @@ public class PieceSequence : MonoBehaviour
                 break;
         }
 
-        Debug.Log(choosenTetromino);
+        
 
         NextTetrominoes.Enqueue(Resources.Load("Tetrominoes/" + choosenTetromino) as GameObject);
     }
