@@ -124,7 +124,6 @@ public class PieceSequence : MonoBehaviour
             CreateTetrominoBag();
         }
 
-        Debug.Log(nextTetromino);
         return nextTetromino;
     }
 }

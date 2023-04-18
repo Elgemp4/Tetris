@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Game : MonoBehaviour
+public class Controls : MonoBehaviour
 {
     private Score score;
 
@@ -26,12 +26,7 @@ public class Game : MonoBehaviour
 
         InGameControls.Movement.MoveLeft.performed += _ => StartMoving();
 
-        InGameControls.Movement.SoftDrop.performed += _ =>
-        {
-            StopCoroutine("FallTick");
-            
-            StartCoroutine(FallTick());
-        };
+        InGameControls.Movement.SoftDrop.performed += _ => StartFalling();
 
         InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
 
@@ -52,6 +47,13 @@ public class Game : MonoBehaviour
         StopCoroutine("MovementTick");
 
         StartCoroutine("MovementTick");
+    }
+
+    private void StartFalling()
+    {
+        StopCoroutine("FallTick");
+
+        StartCoroutine(FallTick());
     }
 
     IEnumerator MovementTick()
@@ -88,7 +90,6 @@ public class Game : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
     }
-
 
     IEnumerator GameTick()
     {
