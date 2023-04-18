@@ -1,10 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Tetromino : MonoBehaviour
 {
+    public const int LEFT = -1, RIGHT = 1;
+
     private const int NumberOfBlock = 4;
 
     protected Playfield playfield;
@@ -30,9 +29,9 @@ public abstract class Tetromino : MonoBehaviour
         InstantiateBlocks();
     }
 
-    public void ResetRotation()
+    public void ChangePosition(Vector2 newPosition)
     {
-        RotationIndex = 0;
+        transform.position = newPosition;
 
         ActualizeBlockPosition();
     }
@@ -42,15 +41,25 @@ public abstract class Tetromino : MonoBehaviour
         ChangePosition(StartPosition);
     }
 
-    public void MoveDown()
+    public void Move(Vector2 direction) 
     {
-        ChangePosition((Vector2)this.transform.position + Vector2.down);
+        ChangePosition((Vector2)this.transform.position + direction);
+    }
+
+    public void Rotate(int direction)
+    {
+        int modulus = rotations.GetLength(0);
+
+        RotationIndex = (RotationIndex + direction + modulus) % modulus;
+
         ActualizeBlockPosition();
     }
 
-    public void MoveUp()
+    public void ResetRotation()
     {
-        ChangePosition((Vector2)this.transform.position + Vector2.up);
+        RotationIndex = 0;
+
+        ActualizeBlockPosition();
     }
 
     protected void InstantiateBlocks()
@@ -63,13 +72,6 @@ public abstract class Tetromino : MonoBehaviour
         {
             blocks[i] = Instantiate(blockPrefab, this.transform, false); //Creation des blocs avec une position relative au tetromino
         }
-
-        ActualizeBlockPosition();
-    }
-
-    public void ChangePosition(Vector2 newPosition)
-    {
-        transform.position = newPosition;
 
         ActualizeBlockPosition();
     }
@@ -88,37 +90,6 @@ public abstract class Tetromino : MonoBehaviour
             Debug.Log(RotationIndex);
             blocks[i].transform.position += (Vector3)rotations[RotationIndex, i];
         }
-    }
-
-    public void RotateLeft() 
-    {
-        if (RotationIndex == 0)
-        {
-            RotationIndex = rotations.GetLength(0) - 1;
-        }
-        else 
-        {
-            RotationIndex--;
-        }
-
-        ActualizeBlockPosition();
-    }
-    public void RotateRight()
-    {
-        RotationIndex = (RotationIndex + 1) % rotations.GetLength(0);
-
-        ActualizeBlockPosition();
-    }
-
-    public void MoveLeft()
-    { 
-        this.transform.position = (Vector2)this.transform.position + Vector2.left;
-    }
-
-
-    public void MoveRight()
-    {
-        this.transform.position = (Vector2)this.transform.position + Vector2.right;
     }
 
     protected abstract Color GetColor();

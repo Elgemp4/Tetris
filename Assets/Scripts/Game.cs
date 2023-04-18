@@ -18,9 +18,9 @@ public class Game : MonoBehaviour
 
         InGameControls.Enable();
 
-        InGameControls.Movement.RotateLeft.performed += _ => playfield.TryRotateLeft();
+        InGameControls.Movement.RotateLeft.performed += _ => playfield.TryRotate(Tetromino.LEFT);
 
-        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotateRight();
+        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotate(Tetromino.RIGHT);
 
         InGameControls.Movement.MoveRight.performed += _ => StartMoving();
 
@@ -62,12 +62,12 @@ public class Game : MonoBehaviour
         {
             if (InGameControls.Movement.MoveLeft.IsPressed())
             {
-                playfield.TryMoveLeft();
+                playfield.TryMove(Vector2.left);
             }
 
             if (InGameControls.Movement.MoveRight.IsPressed())
             {
-                playfield.TryMoveRight();
+                playfield.TryMove(Vector2.right);
             }
 
             yield return new WaitForSeconds(isTheFirstMove ? 0.1f : 0.1f);

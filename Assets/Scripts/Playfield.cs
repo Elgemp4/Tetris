@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class Playfield : MonoBehaviour
 {
@@ -55,6 +51,71 @@ public class Playfield : MonoBehaviour
         GhostTetromino.ShowAtTheBottom();
     }
 
+    #region Movement
+    public void TryMove(Vector2 direction)
+    {
+        CurrentFallingTetromino.Move(direction);
+        if (!IsTetrominoInBound() || IsOverlapping())
+        {
+            CurrentFallingTetromino.Move(-direction);
+        }
+        else
+        {
+            AudioPlayer.PlayMoveAudio();
+            GhostTetromino.ShowAtTheBottom();
+        }
+    }
+
+    public void TryMoveDown()
+    {
+        if (HasLanded(CurrentFallingTetromino))
+        {
+            PlaceTetromino();
+
+            CheckForDestroyedLines();
+
+            GetNextTetromino();
+
+            HaveHold = false;
+        }
+        else
+        {
+            CurrentFallingTetromino.Move(Vector2.down);
+        }
+
+    }
+
+    public void HardDrop()
+    {
+        while (!HasLanded(CurrentFallingTetromino))
+        {
+            TryMoveDown();
+        }
+
+        TryMoveDown();
+
+        CameraShakeSource.GenerateImpulseWithForce(0.15f);
+
+        AudioPlayer.PlayHardDropAudio();
+    }
+
+    public void TryRotate(int direction)
+    {
+        if (Math.Abs(direction) != 1) { return; }
+
+        CurrentFallingTetromino.Rotate(direction);
+
+        if (!IsTetrominoInBound() || IsOverlapping())
+        {
+            CurrentFallingTetromino.Rotate(-direction);
+        }
+        else
+        {
+            AudioPlayer.PlayRotateAudio();
+            GhostTetromino.ShowAtTheBottom();
+        }
+    }
+
     public bool HasLanded(Tetromino tetromino) 
     {
         foreach (GameObject block in tetromino.blocks) 
@@ -82,224 +143,26 @@ public class Playfield : MonoBehaviour
         CameraShakeSource.GenerateImpulseWithForce(0.05f);
     }
 
-    public void CheckForDestroyedLines()
+    public void SetFallingTetromino(Tetromino newTetromino)
     {
-        int destroyedLines = 0;
-
-        int highestClearedLine = 0;
-
-        for (int y =  0; y < Height; y++)
+        if (newTetromino == null)
         {
-            if (IsLineFull(y))
-            {
-                DestroyLine(y);
-                destroyedLines++;
-                highestClearedLine = y;
-            }
-        }
-
-        if (destroyedLines > 0)
-        {
-            AudioPlayer.PlayLineClear(destroyedLines);
-
-            score.AddScore(destroyedLines);
-
-            CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
-
-            DropBlocks(highestClearedLine);
-        }
-        
-    }
-
-    private bool IsLineFull(int y)
-    { 
-        for(int x = 0; x < Width; x++) 
-        {
-            if (BlockGrid[y, x] == null) 
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void DestroyLine(int y)
-    {
-        for (int x = 0; x < Width; x++)
-        {
-            Destroy(BlockGrid[y, x]);
-            BlockGrid[y, x] = null;
-        }
-    }
-
-    public void DropBlocks(int highestClearedLine)
-    {
-        List<Aglomerate> blockAglomerate = new List<Aglomerate>();
-
-        for(int x = 0; x < Width; x++) 
-        {
-            if (BlockGrid[highestClearedLine + 1, x] != null)
-            { 
-                List<GameObject> blocks = CreateAglomerate(highestClearedLine + 1, x);
-
-                blockAglomerate.Add(new Aglomerate(blocks));
-            }
-        }
-
-        foreach (Aglomerate aglomerate in blockAglomerate)
-        {
-            aglomerate.Drop();
-
-            foreach (GameObject block in aglomerate.blockList)
-            {
-                BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = block;
-            }
-        }
-    }
-
-    public List<GameObject> CreateAglomerate(int y, int x)
-    {
-        List<GameObject> aglomerateBlocks = new List<GameObject>();
-
-        GameObject block = null;
-
-        if (IsInBound(x, y)) 
-        {
-            block = BlockGrid[y, x];
-        }
-        
-        if (block != null) 
-        {
-            aglomerateBlocks.Add(block);
-            BlockGrid[y, x] = null;
-
-            aglomerateBlocks.AddRange(CreateAglomerate(y + 1, x));
-            aglomerateBlocks.AddRange(CreateAglomerate(y - 1, x));
-            aglomerateBlocks.AddRange(CreateAglomerate(y, x + 1));
-            aglomerateBlocks.AddRange(CreateAglomerate(y, x - 1));
-        }
-        
-        return aglomerateBlocks;
-    }
-
-    public bool IsABlockPresent(int x, int y)
-    {
-        return BlockGrid[y, x] != null;
-    }
-
-    public void Hold()
-    {
-        if (HaveHold)
-        {
+            GetNextTetromino();
             return;
         }
 
-        Tetromino newTetromino = TetrominoHold.Switch(CurrentFallingTetromino);
+        CurrentFallingTetromino = newTetromino;
 
-        HaveHold = true;
+        CurrentFallingTetromino.SetAtStart();
 
-        SetFallingTetromino(newTetromino);
+        GhostTetromino.SetReplicated_Tetromino(CurrentFallingTetromino);
 
-        AudioPlayer.PlayHoldAudio();
+        GhostTetromino.ShowAtTheBottom();
     }
 
     private void GetNextTetromino()
     {
         SetFallingTetromino(PieceSequence.GetNextTetromino().GetComponent<Tetromino>());
-    }
-
-    public void TryMoveLeft()
-    {
-        CurrentFallingTetromino.MoveLeft();
-
-        if (!IsTetrominoInBound() || IsOverlapping())
-        {
-            CurrentFallingTetromino.MoveRight();
-        }
-        else 
-        {
-            AudioPlayer.PlayMoveAudio();
-            GhostTetromino.ShowAtTheBottom();
-        }
-    }
-
-    public void TryMoveRight()
-    {
-        CurrentFallingTetromino.MoveRight();
-
-        if (!IsTetrominoInBound() || IsOverlapping())
-        {
-            CurrentFallingTetromino.MoveLeft();
-        }
-        else 
-        {
-            AudioPlayer.PlayMoveAudio();
-            GhostTetromino.ShowAtTheBottom();
-        }
-    }
-
-    public void TryRotateLeft()
-    { 
-        CurrentFallingTetromino.RotateLeft();
-
-        if (!IsTetrominoInBound() || IsOverlapping())
-        {
-            CurrentFallingTetromino.RotateRight();
-        }
-        else
-        {
-            AudioPlayer.PlayRotateAudio();
-            GhostTetromino.ShowAtTheBottom();
-        }
-    }
-
-    public void TryRotateRight()
-    {
-        CurrentFallingTetromino.RotateRight();
-
-        if (!IsTetrominoInBound() || IsOverlapping())
-        {
-            CurrentFallingTetromino.RotateLeft();
-        }
-        else
-        {
-            AudioPlayer.PlayRotateAudio();
-            GhostTetromino.ShowAtTheBottom();
-        }
-    }
-
-    public void HardDrop()
-    {
-        while (!HasLanded(CurrentFallingTetromino))
-        {
-            TryMoveDown();
-        }
-
-        TryMoveDown();
-
-        CameraShakeSource.GenerateImpulseWithForce(0.15f);
-
-        AudioPlayer.PlayHardDropAudio();
-    }
-
-    public void TryMoveDown()
-    {
-        if (HasLanded(CurrentFallingTetromino))
-        {
-            PlaceTetromino();
-
-            CheckForDestroyedLines();
-
-            GetNextTetromino();
-
-            HaveHold = false;
-        }
-        else 
-        {
-            CurrentFallingTetromino.MoveDown();
-        }
-        
     }
 
     private bool IsOverlapping()
@@ -337,20 +200,135 @@ public class Playfield : MonoBehaviour
         return x >= 0 && x < 10 && y >= 0;
     }
 
-    public void SetFallingTetromino(Tetromino newTetromino)
+    #endregion
+
+    #region LineClearing
+
+    public void CheckForDestroyedLines()
     {
-        if (newTetromino == null)
+        int destroyedLines = 0;
+
+        int highestClearedLine = 0;
+
+        for (int y = 0; y < Height; y++)
         {
-            GetNextTetromino();
+            if (IsLineFull(y))
+            {
+                DestroyLine(y);
+                destroyedLines++;
+                highestClearedLine = y;
+            }
+        }
+
+        if (destroyedLines > 0)
+        {
+            AudioPlayer.PlayLineClear(destroyedLines);
+
+            score.AddScore(destroyedLines);
+
+            CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
+
+            DropBlocks(highestClearedLine);
+        }
+
+    }
+
+    private bool IsLineFull(int y)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            if (BlockGrid[y, x] == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void DestroyLine(int y)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            Destroy(BlockGrid[y, x]);
+            BlockGrid[y, x] = null;
+        }
+    }
+
+    public void DropBlocks(int highestClearedLine)
+    {
+        List<Aglomerate> blockAglomerate = new List<Aglomerate>();
+
+        for (int x = 0; x < Width; x++)
+        {
+            if (BlockGrid[highestClearedLine + 1, x] != null)
+            {
+                List<GameObject> blocks = CreateAglomerate(highestClearedLine + 1, x);
+
+                blockAglomerate.Add(new Aglomerate(blocks));
+            }
+        }
+
+        foreach (Aglomerate aglomerate in blockAglomerate)
+        {
+            aglomerate.Drop();
+
+            foreach (GameObject block in aglomerate.blockList)
+            {
+                BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = block;
+            }
+        }
+    }
+
+    public List<GameObject> CreateAglomerate(int y, int x)
+    {
+        List<GameObject> aglomerateBlocks = new List<GameObject>();
+
+        GameObject block = null;
+
+        if (IsInBound(x, y))
+        {
+            block = BlockGrid[y, x];
+        }
+
+        if (block != null)
+        {
+            aglomerateBlocks.Add(block);
+            BlockGrid[y, x] = null;
+
+            aglomerateBlocks.AddRange(CreateAglomerate(y + 1, x));
+            aglomerateBlocks.AddRange(CreateAglomerate(y - 1, x));
+            aglomerateBlocks.AddRange(CreateAglomerate(y, x + 1));
+            aglomerateBlocks.AddRange(CreateAglomerate(y, x - 1));
+        }
+
+        return aglomerateBlocks;
+    }
+
+    #endregion
+
+    #region Misc
+
+    public bool IsABlockPresent(int x, int y)
+    {
+        return BlockGrid[y, x] != null;
+    }
+
+    public void Hold()
+    {
+        if (HaveHold)
+        {
             return;
         }
 
-        CurrentFallingTetromino = newTetromino;
+        Tetromino newTetromino = TetrominoHold.Switch(CurrentFallingTetromino);
 
-        CurrentFallingTetromino.SetAtStart();
+        HaveHold = true;
 
-        GhostTetromino.SetReplicated_Tetromino(CurrentFallingTetromino);
+        SetFallingTetromino(newTetromino);
 
-        GhostTetromino.ShowAtTheBottom();
+        AudioPlayer.PlayHoldAudio();
     }
+
+    #endregion
 }

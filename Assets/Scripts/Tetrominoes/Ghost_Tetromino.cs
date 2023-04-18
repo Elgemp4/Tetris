@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Ghost_Tetromino : Tetromino
@@ -12,7 +10,7 @@ public class Ghost_Tetromino : Tetromino
 
         this.RotationIndex = Replicated_Tetromino.RotationIndex;
 
-        RemoveBlocks();
+        Reset();
         
         GenerateRotations();
 
@@ -29,13 +27,11 @@ public class Ghost_Tetromino : Tetromino
 
         while (!playfield.HasLanded(this))
         {
-            MoveDown();
+            Move(Vector2.down);
         }
-
-        
     }
 
-    public void RemoveBlocks()
+    public void Reset()
     {
         if (blocks == null)
         {
