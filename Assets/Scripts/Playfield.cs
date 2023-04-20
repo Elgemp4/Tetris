@@ -163,6 +163,11 @@ public class Playfield : MonoBehaviour
     private void GetNextTetromino()
     {
         SetFallingTetromino(PieceSequence.GetNextTetromino().GetComponent<Tetromino>());
+        
+        if (IsOverlapping())
+        {
+            Debug.Log("GameOver !!!!!!");
+        }
     }
 
     private bool IsOverlapping()

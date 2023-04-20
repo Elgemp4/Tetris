@@ -87,7 +87,6 @@ public abstract class Tetromino : MonoBehaviour
         for (int i = 0; i < rotations.GetLength(1); i++)
         {
             blocks[i].transform.position = this.transform.position;
-            Debug.Log(RotationIndex);
             blocks[i].transform.position += (Vector3)rotations[RotationIndex, i];
         }
     }
