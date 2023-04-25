@@ -28,6 +28,33 @@ public class Audio : MonoBehaviour
     [SerializeField]
     AudioSource HoldAudio;
 
+    [SerializeField]
+    AudioSource Music;
+
+    void Start()
+    {
+        Instance = this;
+
+        MoveAudio.volume = DataTransferer.EffectVolume;
+
+        RotateAudio.volume = DataTransferer.EffectVolume;
+
+        HardDropAudio.volume = DataTransferer.EffectVolume;
+
+        SingleLineClearedAudio.volume = DataTransferer.EffectVolume;
+
+        DoubleLineClearedAudio.volume = DataTransferer.EffectVolume;
+
+        TripleLineClearedAudio.volume = DataTransferer.EffectVolume;
+
+        TetrisLineClearedAudio.volume = DataTransferer.EffectVolume;
+
+        HoldAudio.volume = DataTransferer.EffectVolume;
+
+        Debug.Log(DataTransferer.MusicVolume);
+        Music.volume = DataTransferer.MusicVolume;
+    }
+
 
     public void PlayMoveAudio()
     {
@@ -66,10 +93,5 @@ public class Audio : MonoBehaviour
                 TetrisLineClearedAudio.Play();
                 break;
         }
-    }
-
-    void Start()
-    {
-        Instance = this;
     }
 }
