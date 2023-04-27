@@ -11,10 +11,12 @@ public class DataTransferer : MonoBehaviour
     public static void SetMusicVolume(float volumeLevel)
     { 
         MusicVolume = volumeLevel;
+        PlayerPrefs.SetFloat("MusicVolume", volumeLevel);
     }
 
     public static void SetEffectVolume(float volumeLevel) 
     { 
         EffectVolume = volumeLevel;
+        PlayerPrefs.SetFloat("EffectVolume", volumeLevel);
     }
 }
