@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Controls : MonoBehaviour
+public class ControlsManager : MonoBehaviour
 {
+    public static ControlsManager Instance;
+
     private Score score;
 
     private Playfield playfield;
+
+    private IShowable pauseMenu;
 
     private InGameControls InGameControls;
 
@@ -14,6 +18,8 @@ public class Controls : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         InGameControls = new InGameControls();
 
         InGameControls.Enable();
@@ -31,16 +37,41 @@ public class Controls : MonoBehaviour
         InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
 
         InGameControls.Movement.Hold.performed += _ => playfield.Hold();
+
+        InGameControls.Movement.Pause.performed += _ =>
+        {
+            PauseGame();
+
+            pauseMenu.ShowMenu();
+        };
     }
 
     void Start()
     {
         score = Score.Instance;
+
         playfield = Playfield.Instance;
+
+        pauseMenu = PauseMenu.Instance;
+
+        Debug.Log(pauseMenu);
 
         GameLoopCoroutine = StartCoroutine(GameTick());
     }
 
+    public void PauseGame()
+    {
+        InGameControls.Disable();
+
+        StopCoroutine(GameLoopCoroutine);
+    }
+
+    public void ResumeGame()
+    {
+        InGameControls.Enable();
+
+        GameLoopCoroutine = StartCoroutine(GameTick());
+    }
 
     private void StartMoving()
     {
@@ -53,7 +84,7 @@ public class Controls : MonoBehaviour
     {
         StopCoroutine("FallTick");
 
-        StartCoroutine(FallTick());
+        StartCoroutine("FallTick");
     }
 
     IEnumerator MovementTick()

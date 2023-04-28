@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UI : MonoBehaviour
+public class MainMenu : MonoBehaviour, IShowable
 {
     [SerializeField]
-    private GameObject MainMenu;
+    private GameObject MainMenuPanel;
 
     [SerializeField]
-    private GameObject OptionMenu;
+    private GameObject OptionMenuPanel;
 
     [SerializeField]
     private Slider MusicVolumeSlider;
@@ -25,6 +23,8 @@ public class UI : MonoBehaviour
 
         MusicVolumeSlider.value = DataTransferer.MusicVolume;
         EffectVolumeSlider.value = DataTransferer.EffectVolume;
+
+        this.ShowMenu();
     }
 
     public void StartGame()
@@ -45,14 +45,20 @@ public class UI : MonoBehaviour
 
     public void ShowOptions()
     {
-        MainMenu.SetActive(false);
-        OptionMenu.SetActive(true);
+        MainMenuPanel.SetActive(false);
+        OptionMenuPanel.SetActive(true);
     }
 
     public void ShowMenu()
     {
-        MainMenu.SetActive(true);
-        OptionMenu.SetActive(false);
+        MainMenuPanel.SetActive(true);
+        OptionMenuPanel.SetActive(false);
+    }
+
+    public void HideMenu()
+    {
+        MainMenuPanel.SetActive(false);
+        OptionMenuPanel.SetActive(false);
     }
 
     public void QuitGame()
@@ -60,4 +66,6 @@ public class UI : MonoBehaviour
         Debug.Log("Quit Game");
         Application.Quit(); //Ne marche pas dans Unity, besoin du jeu build
     }
+
+    
 }
