@@ -7,6 +7,8 @@ public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
 
+    private ControlsManager ControlsManager;
+
     private CinemachineImpulseSource CameraShakeSource;
 
     private Audio AudioPlayer;
@@ -18,6 +20,8 @@ public class Playfield : MonoBehaviour
     private GameObject[,] BlockGrid;
 
     private TetrominoHold TetrominoHold;
+
+    private GameMenuManager MenuManager;
 
     [SerializeField]
     private int Width, Height;
@@ -31,6 +35,10 @@ public class Playfield : MonoBehaviour
     void Start()
     {
         Instance = this;
+
+        MenuManager = GameMenuManager.Instance;
+
+        ControlsManager = ControlsManager.Instance;
 
         GhostTetromino = Instantiate((GameObject)Resources.Load("Tetrominoes/Ghost_Tetromino")).GetComponent<Ghost_Tetromino>();
 
@@ -166,8 +174,15 @@ public class Playfield : MonoBehaviour
         
         if (IsOverlapping())
         {
-            Debug.Log("GameOver !!!!!!");
+            GameOver();
         }
+    }
+
+    private void GameOver()
+    {
+        ControlsManager.PauseGame();
+
+        MenuManager.OpenGameOverMenu();
     }
 
     private bool IsOverlapping()

@@ -6,11 +6,11 @@ public class ControlsManager : MonoBehaviour
 {
     public static ControlsManager Instance;
 
-    private Score score;
+    private Score Score;
 
-    private Playfield playfield;
+    private Playfield Playfield;
 
-    private IShowable pauseMenu;
+    private GameMenuManager MenuManager;
 
     private InGameControls InGameControls;
 
@@ -24,9 +24,9 @@ public class ControlsManager : MonoBehaviour
 
         InGameControls.Enable();
 
-        InGameControls.Movement.RotateLeft.performed += _ => playfield.TryRotate(Tetromino.LEFT);
+        InGameControls.Movement.RotateLeft.performed += _ => Playfield.TryRotate(Tetromino.LEFT);
 
-        InGameControls.Movement.RotateRight.performed += _ => playfield.TryRotate(Tetromino.RIGHT);
+        InGameControls.Movement.RotateRight.performed += _ => Playfield.TryRotate(Tetromino.RIGHT);
 
         InGameControls.Movement.MoveRight.performed += _ => StartMoving();
 
@@ -34,27 +34,25 @@ public class ControlsManager : MonoBehaviour
 
         InGameControls.Movement.SoftDrop.performed += _ => StartFalling();
 
-        InGameControls.Movement.HardDrop.performed += _ => playfield.HardDrop();
+        InGameControls.Movement.HardDrop.performed += _ => Playfield.HardDrop();
 
-        InGameControls.Movement.Hold.performed += _ => playfield.Hold();
+        InGameControls.Movement.Hold.performed += _ => Playfield.Hold();
 
         InGameControls.Movement.Pause.performed += _ =>
         {
             PauseGame();
 
-            pauseMenu.ShowMenu();
+            MenuManager.OpenPauseMenu();
         };
     }
 
     void Start()
     {
-        score = Score.Instance;
+        Score = Score.Instance;
 
-        playfield = Playfield.Instance;
+        Playfield = Playfield.Instance;
 
-        pauseMenu = PauseMenu.Instance;
-
-        Debug.Log(pauseMenu);
+        MenuManager = GameMenuManager.Instance;
 
         GameLoopCoroutine = StartCoroutine(GameTick());
     }
@@ -95,12 +93,12 @@ public class ControlsManager : MonoBehaviour
         {
             if (InGameControls.Movement.MoveLeft.IsPressed())
             {
-                playfield.TryMove(Vector2.left);
+                Playfield.TryMove(Vector2.left);
             }
 
             if (InGameControls.Movement.MoveRight.IsPressed())
             {
-                playfield.TryMove(Vector2.right);
+                Playfield.TryMove(Vector2.right);
             }
 
             yield return new WaitForSeconds(isTheFirstMove ? 0.1f : 0.1f);
@@ -113,7 +111,7 @@ public class ControlsManager : MonoBehaviour
     {
         while (InGameControls.Movement.SoftDrop.IsPressed())
         {
-            playfield.TryMoveDown();
+            Playfield.TryMoveDown();
 
             StopCoroutine(GameLoopCoroutine);
             GameLoopCoroutine = StartCoroutine(GameTick());
@@ -126,9 +124,9 @@ public class ControlsManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds( (60f-score.Level*2) / 60);
+            yield return new WaitForSeconds( (60f-Score.Level*2) / 60);
 
-            playfield.TryMoveDown();
+            Playfield.TryMoveDown();
         }
     }
 }
