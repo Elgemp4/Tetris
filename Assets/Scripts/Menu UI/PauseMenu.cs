@@ -1,37 +1,34 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : MonoBehaviour, IShowable
+public class PauseMenu : Showable
 {
     public static PauseMenu Instance;
 
-    private ControlsManager controls;
+    private ControlsManager Controls;
 
-    void Start()
+    private OptionsMenu OptionsUI;
+
+    protected override void PostStart()
     {
         Instance = this;
+
+        OptionsUI = OptionsMenu.Instance;
         
-        controls = ControlsManager.Instance;
+        Controls = ControlsManager.Instance;
 
         HideMenu();
-
-        Debug.Log("PauseMenu Start");
-    }
-
-    public void ShowMenu()
-    {
-        this.gameObject.SetActive(true);
-    }
-
-    public void HideMenu()
-    {
-        this.gameObject.SetActive(false);
     }
 
     public void Resume()
     {
-        controls.ResumeGame();
+        Controls.ResumeGame();
         HideMenu();
+    }
+
+    public void ShowOptions()
+    { 
+        OptionsUI.ShowMenu(this);
     }
 
     public void ReturnToMainMenu()

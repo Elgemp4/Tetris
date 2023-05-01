@@ -7,21 +7,23 @@ public class Playfield : MonoBehaviour
 {
     public static Playfield Instance;
 
-    private ControlsManager ControlsManager;
+    private ControlsManager _ControlsManager;
 
-    private CinemachineImpulseSource CameraShakeSource;
+    private CinemachineImpulseSource _CameraShakeSource;
 
-    private Audio AudioPlayer;
+    private Audio _AudioPlayer;
 
-    private Score score;
+    private Score _Score;
 
-    private PieceSequence PieceSequence;
+    private PieceSequence _PieceSequence;
 
-    private GameObject[,] BlockGrid;
+    private GameObject[,] _BlockGrid;
 
-    private TetrominoHold TetrominoHold;
+    private TetrominoHold _TetrominoHold;
 
-    private GameMenuManager MenuManager;
+    private GameMenuManager _GameMenuManager;
+
+    private LeaderBoard _LeaderBoard;
 
     [SerializeField]
     private int Width, Height;
@@ -36,23 +38,25 @@ public class Playfield : MonoBehaviour
     {
         Instance = this;
 
-        MenuManager = GameMenuManager.Instance;
+        _GameMenuManager = GameMenuManager.Instance;
 
-        ControlsManager = ControlsManager.Instance;
+        _ControlsManager = ControlsManager.Instance;
+
+        _LeaderBoard = LeaderBoard.Instance;
 
         GhostTetromino = Instantiate((GameObject)Resources.Load("Tetrominoes/Ghost_Tetromino")).GetComponent<Ghost_Tetromino>();
 
-        CameraShakeSource = GetComponent<CinemachineImpulseSource>();
+        _CameraShakeSource = GetComponent<CinemachineImpulseSource>();
 
-        AudioPlayer = Audio.Instance;
+        _AudioPlayer = Audio.Instance;
 
-        PieceSequence = PieceSequence.Instance;
+        _PieceSequence = PieceSequence.Instance;
 
-        TetrominoHold = TetrominoHold.Instance;
+        _TetrominoHold = TetrominoHold.Instance;
 
-        BlockGrid = new GameObject[Height, Width];
+        _BlockGrid = new GameObject[Height, Width];
 
-        score = Score.Instance;
+        _Score = Score.Instance;
 
         GetNextTetromino();
 
@@ -69,7 +73,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            AudioPlayer.PlayMoveAudio();
+            _AudioPlayer.PlayMoveAudio();
             GhostTetromino.ShowAtTheBottom();
         }
     }
@@ -102,9 +106,9 @@ public class Playfield : MonoBehaviour
 
         TryMoveDown();
 
-        CameraShakeSource.GenerateImpulseWithForce(0.15f);
+        _CameraShakeSource.GenerateImpulseWithForce(0.15f);
 
-        AudioPlayer.PlayHardDropAudio();
+        _AudioPlayer.PlayHardDropAudio();
     }
 
     public void TryRotate(int direction)
@@ -119,7 +123,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            AudioPlayer.PlayRotateAudio();
+            _AudioPlayer.PlayRotateAudio();
             GhostTetromino.ShowAtTheBottom();
         }
     }
@@ -130,7 +134,7 @@ public class Playfield : MonoBehaviour
         {
             Vector2 blockPosition = (Vector2)block.transform.position;
 
-            if (blockPosition.y == 0 || BlockGrid[(int)blockPosition.y - 1, (int)blockPosition.x] != null)
+            if (blockPosition.y == 0 || _BlockGrid[(int)blockPosition.y - 1, (int)blockPosition.x] != null)
             {
                 return true;
             }
@@ -143,12 +147,12 @@ public class Playfield : MonoBehaviour
     {
         foreach (GameObject block in CurrentFallingTetromino.blocks)
         {
-            this.BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = Instantiate(block, block.transform.position, block.transform.rotation, this.transform);
+            this._BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = Instantiate(block, block.transform.position, block.transform.rotation, this.transform);
         }
 
         Destroy(CurrentFallingTetromino.gameObject);
 
-        CameraShakeSource.GenerateImpulseWithForce(0.05f);
+        _CameraShakeSource.GenerateImpulseWithForce(0.05f);
     }
 
     public void SetFallingTetromino(Tetromino newTetromino)
@@ -170,7 +174,7 @@ public class Playfield : MonoBehaviour
 
     private void GetNextTetromino()
     {
-        SetFallingTetromino(PieceSequence.GetNextTetromino().GetComponent<Tetromino>());
+        SetFallingTetromino(_PieceSequence.GetNextTetromino().GetComponent<Tetromino>());
         
         if (IsOverlapping())
         {
@@ -180,9 +184,13 @@ public class Playfield : MonoBehaviour
 
     private void GameOver()
     {
-        ControlsManager.PauseGame();
+        _ControlsManager.PauseGame();
 
-        MenuManager.OpenGameOverMenu();
+        _GameMenuManager.OpenGameOverMenu();
+
+        _LeaderBoard.AddNewScore(_Score.ScoreCount);
+
+        Debug.Log(_LeaderBoard);
     }
 
     private bool IsOverlapping()
@@ -191,7 +199,7 @@ public class Playfield : MonoBehaviour
         {
             Vector3 position = block.transform.position;
 
-            if (BlockGrid[(int)position.y, (int)position.x] != null)
+            if (_BlockGrid[(int)position.y, (int)position.x] != null)
             {
                 return true;
             }
@@ -243,11 +251,11 @@ public class Playfield : MonoBehaviour
 
         if (destroyedLines > 0)
         {
-            AudioPlayer.PlayLineClear(destroyedLines);
+            _AudioPlayer.PlayLineClear(destroyedLines);
 
-            score.AddScore(destroyedLines);
+            _Score.AddScore(destroyedLines);
 
-            CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
+            _CameraShakeSource.GenerateImpulseWithForce(destroyedLines * 0.5f);
 
             foreach(int line in clearedLines)
             {
@@ -262,7 +270,7 @@ public class Playfield : MonoBehaviour
     {
         for (int x = 0; x < Width; x++)
         {
-            if (BlockGrid[y, x] == null)
+            if (_BlockGrid[y, x] == null)
             {
                 return false;
             }
@@ -275,8 +283,8 @@ public class Playfield : MonoBehaviour
     {
         for (int x = 0; x < Width; x++)
         {
-            Destroy(BlockGrid[y, x]);
-            BlockGrid[y, x] = null;
+            Destroy(_BlockGrid[y, x]);
+            _BlockGrid[y, x] = null;
         }
     }
 
@@ -286,7 +294,7 @@ public class Playfield : MonoBehaviour
 
         for (int x = 0; x < Width; x++)
         {
-            if (BlockGrid[highestClearedLine + 1, x] != null)
+            if (_BlockGrid[highestClearedLine + 1, x] != null)
             {
                 List<GameObject> blocks = CreateAglomerate(highestClearedLine + 1, x);
 
@@ -300,7 +308,7 @@ public class Playfield : MonoBehaviour
 
             foreach (GameObject block in aglomerate.blockList)
             {
-                BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = block;
+                _BlockGrid[(int)block.transform.position.y, (int)block.transform.position.x] = block;
             }
         }
     }
@@ -313,13 +321,13 @@ public class Playfield : MonoBehaviour
 
         if (IsInBound(x, y))
         {
-            block = BlockGrid[y, x];
+            block = _BlockGrid[y, x];
         }
 
         if (block != null)
         {
             aglomerateBlocks.Add(block);
-            BlockGrid[y, x] = null;
+            _BlockGrid[y, x] = null;
 
             aglomerateBlocks.AddRange(CreateAglomerate(y + 1, x));
             aglomerateBlocks.AddRange(CreateAglomerate(y - 1, x));
@@ -336,7 +344,7 @@ public class Playfield : MonoBehaviour
 
     public bool IsABlockPresent(int x, int y)
     {
-        return BlockGrid[y, x] != null;
+        return _BlockGrid[y, x] != null;
     }
 
     public void Hold()
@@ -346,13 +354,13 @@ public class Playfield : MonoBehaviour
             return;
         }
 
-        Tetromino newTetromino = TetrominoHold.Switch(CurrentFallingTetromino);
+        Tetromino newTetromino = _TetrominoHold.Switch(CurrentFallingTetromino);
 
         HaveHold = true;
 
         SetFallingTetromino(newTetromino);
 
-        AudioPlayer.PlayHoldAudio();
+        _AudioPlayer.PlayHoldAudio();
     }
 
     #endregion

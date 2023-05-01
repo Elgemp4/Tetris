@@ -34,7 +34,10 @@ public class Audio : MonoBehaviour
     void Start()
     {
         Instance = this;
+    }
 
+    void FixedUpdate()
+    {
         MoveAudio.volume = DataTransferer.EffectVolume;
 
         RotateAudio.volume = DataTransferer.EffectVolume;
@@ -51,7 +54,6 @@ public class Audio : MonoBehaviour
 
         HoldAudio.volume = DataTransferer.EffectVolume;
 
-        Debug.Log(DataTransferer.MusicVolume);
         Music.volume = DataTransferer.MusicVolume;
     }
 

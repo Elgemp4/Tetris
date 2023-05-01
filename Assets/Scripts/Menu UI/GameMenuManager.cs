@@ -4,9 +4,9 @@ public class GameMenuManager : MonoBehaviour
 {
     public static GameMenuManager Instance;
 
-    private IShowable PauseMenuUI;
+    private Showable PauseMenuUI;
 
-    private IShowable GameOverMenuUI;
+    private Showable GameOverMenuUI;
 
     // Start is called before the first frame update
     void Start()

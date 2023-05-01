@@ -65,7 +65,6 @@ public class Score : MonoBehaviour
 
     private void RefreshText()
     {
-        DisplayedText.text = "Score: " + ScoreCount + "\n" + "Lines: " + ClearedLineCount + "\n" + "Level: " + Level;
-        Debug.Log("Text refreshed");
+        DisplayedText.text = "Score: " + ScoreCount + "\n" + "Lignes: " + ClearedLineCount + "\n" + "Niveau: " + Level;
     }
 }

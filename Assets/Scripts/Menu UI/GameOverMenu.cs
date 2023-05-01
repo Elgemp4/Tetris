@@ -2,38 +2,39 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameOverMenu : MonoBehaviour, IShowable
+public class GameOverMenu : Showable
 {
     public static GameOverMenu Instance;
 
-    private Score score;
+    private Score _Score;
+
+    private LeaderBoardMenu _LeaderBoardMenu;
 
     [SerializeField]
     private TMP_Text ScoreText;
 
-    void Start()
+    protected override void PostStart()
     {
         Instance = this;
 
-        score = Score.Instance;
+        _Score = Score.Instance;
 
-        HideMenu();
+        _LeaderBoardMenu = LeaderBoardMenu.Instance;
     }
 
-    public void ShowMenu()
+    protected override void OnShow()
     {
-        this.gameObject.SetActive(true);
-
-        ScoreText.text = "Score : " + score.ScoreCount;
-    }
-    public void HideMenu()
-    {
-        this.gameObject.SetActive(false);
+        ScoreText.text = "Score : " + _Score.ScoreCount;
     }
 
     public void RestartGame()
     {
         SceneManager.LoadScene("Tetris_Normal_Mode");
+    }
+
+    public void ShowLeaderBoard()
+    {
+        _LeaderBoardMenu.ShowMenu(this);
     }
 
     public void ReturnToMainMenu()

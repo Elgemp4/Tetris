@@ -1,28 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour, IShowable
+public class MainMenu : Showable
 {
-    [SerializeField]
-    private GameObject MainMenuPanel;
+    private Showable OptionsUI;
 
-    [SerializeField]
-    private GameObject OptionMenuPanel;
+    private Showable LeaderBoardUI;
 
-    [SerializeField]
-    private Slider MusicVolumeSlider;
-
-    [SerializeField]
-    private Slider EffectVolumeSlider;
-
-    void Start()
+    protected override void PostStart()
     {
-        DataTransferer.SetMusicVolume(PlayerPrefs.GetFloat("MusicVolume"));
-        DataTransferer.SetEffectVolume(PlayerPrefs.GetFloat("EffectVolume"));
+        OptionsUI = OptionsMenu.Instance;
 
-        MusicVolumeSlider.value = DataTransferer.MusicVolume;
-        EffectVolumeSlider.value = DataTransferer.EffectVolume;
+        LeaderBoardUI = LeaderBoardMenu.Instance;
 
         this.ShowMenu();
     }
@@ -32,38 +21,18 @@ public class MainMenu : MonoBehaviour, IShowable
         SceneManager.LoadScene("Scenes/Tetris_Normal_Mode");
     }
 
-    public void ModifyMusicVolume(float volume)
-    { 
-        DataTransferer.SetMusicVolume(volume);
-        
-    }
-
-    public void ModifyEffectVolume(float volume)
-    { 
-        DataTransferer.SetEffectVolume(volume);
-    }
-
     public void ShowOptions()
     {
-        MainMenuPanel.SetActive(false);
-        OptionMenuPanel.SetActive(true);
+        OptionsUI.ShowMenu(this);
     }
 
-    public void ShowMenu()
+    public void ShowLeaderBoard()
     {
-        MainMenuPanel.SetActive(true);
-        OptionMenuPanel.SetActive(false);
-    }
-
-    public void HideMenu()
-    {
-        MainMenuPanel.SetActive(false);
-        OptionMenuPanel.SetActive(false);
+        LeaderBoardUI.ShowMenu(this);
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quit Game");
         Application.Quit(); //Ne marche pas dans Unity, besoin du jeu build
     }
 
