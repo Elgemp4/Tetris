@@ -1,8 +1,15 @@
+using System.Linq;
 using UnityEngine;
 
 public class Audio : MonoBehaviour
 {
     public static Audio Instance;
+
+    [SerializeField]
+    AudioClip[] Musics;
+
+    private int PlayingMusicIndex = 0;
+
 
     [SerializeField]
     AudioSource MoveAudio;
@@ -29,7 +36,7 @@ public class Audio : MonoBehaviour
     AudioSource HoldAudio;
 
     [SerializeField]
-    AudioSource Music;
+    AudioSource MusicPlayer;
 
     void Start()
     {
@@ -54,7 +61,7 @@ public class Audio : MonoBehaviour
 
         HoldAudio.volume = DataTransferer.EffectVolume;
 
-        Music.volume = DataTransferer.MusicVolume;
+        MusicPlayer.volume = DataTransferer.MusicVolume;
     }
 
 
@@ -94,6 +101,33 @@ public class Audio : MonoBehaviour
             case 4:
                 TetrisLineClearedAudio.Play();
                 break;
+        }
+    }
+
+    private void Update()
+    {
+        if (PlayingMusicIndex == 0)
+        {
+            ShuffleMusics();
+        }
+
+        if (!MusicPlayer.isPlaying)
+        {
+            PlayingMusicIndex = (PlayingMusicIndex + 1) % Musics.Length;
+            MusicPlayer.clip = Musics[PlayingMusicIndex];
+            MusicPlayer.Play();
+        }
+    }
+
+    private void ShuffleMusics()
+    {
+        for (int i = 0; i < Musics.Length; i++)
+        {
+            int randomIndex = Random.Range(0, Musics.Length - 1);
+
+            AudioClip temp = Musics[i];
+            Musics[i] = Musics[randomIndex];
+            Musics[randomIndex] = temp;
         }
     }
 }

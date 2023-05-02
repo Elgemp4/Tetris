@@ -123,23 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &901966754 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8464017221499889999, guid: 1a3f261964a56d64a9a2bfb627445da3, type: 3}
-  m_PrefabInstance: {fileID: 1540150934}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &901966755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901966754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21b153c0f0a642c4fb94bb56a5860050, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &983254640
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -319,34 +302,6 @@ PrefabInstance:
     - target: {fileID: 4158280921020734888, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586572, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 54
-      objectReference: {fileID: 0}
-    - target: {fileID: 4158280921088586573, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
-      propertyPath: m_Name
-      value: Return
       objectReference: {fileID: 0}
     - target: {fileID: 4158280921485714250, guid: d095adf5525e7fd4b83791d2238b5a89, type: 3}
       propertyPath: m_AnchorMax.x

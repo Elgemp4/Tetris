@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Project
+  m_Title: Game
   m_RootView: {fileID: 3}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 54
+  controlID: 51
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 55
+  controlID: 52
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 56
+  controlID: 53
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -215,8 +215,8 @@ MonoBehaviour:
     y: 0
     width: 292
     height: 549
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -444,7 +444,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 58f1fcffa8f1fcff6cf3fcffa6f4fcffb0f9fcfff6f9fcffbefdfcff00fffcffc402fdffbe06fdffb007fdff9209fdff240dfdff642bfdff082cfdff162efdff2432fdff9a52fdff1654fdff305cfdffe45dfdff2e8afdff6490fdff6690fdffdac8feff80cafeff0af4feffb0f5feff5c2dffff022fffff4e30ffff9a31ffffd832ffff1e34ffff9868ffff8ed6ffffdae2ffffa2e3ffff78e4ffff34e7fffffaebffffc0f5ffff0afbffff647e00008c7e0000a47e0000c2820000d0850000e48500006e860000d8b10000f4d7000072ff0000be060100320701005c090100d80e0100a2110100
+      m_ExpandedIDs: 50d3ffff0afbffff3a840000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -750,7 +750,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: 556.7879, y: 306.31046, z: 2212.3022}
     speed: 2
-    m_Value: {x: 426.76437, y: 237.10315, z: 2.4681334}
+    m_Value: {x: 556.7879, y: 306.31046, z: 2212.3022}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -803,7 +803,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 400.68674
     speed: 2
-    m_Value: 270.11264
+    m_Value: 400.68674
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -869,22 +869,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefab/Uis
+    - Assets/Sounds/Music
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Prefab/Uis
+  - Assets/Sounds/Music
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\elgem\Documents\GitHub\Tetris
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 66830000
-    m_LastClickedID: 33638
-    m_ExpandedIDs: 00000000d4650000d6650000d8650000f065000000ca9a3b
+    m_SelectedIDs: 267a0000
+    m_LastClickedID: 31270
+    m_ExpandedIDs: 000000000266000004660000066600001e6600002a66000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -900,7 +900,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 0}
+      m_ClientGUIView: {fileID: 11}
     m_SearchString: 
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
@@ -912,7 +912,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000d4650000d6650000d8650000
+    m_ExpandedIDs: 00000000026600000466000006660000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
