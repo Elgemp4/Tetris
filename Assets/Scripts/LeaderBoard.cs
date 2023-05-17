@@ -12,15 +12,7 @@ public class LeaderBoard : MonoBehaviour
     {
         Instance = this;
 
-        for (int i = 0; i < LeaderBoardData.Length; i++)
-        {
-            LeaderBoardData[i] = LoadPosition(i);
-        }
-    }
-
-    private (string, int) LoadPosition(int position)
-    {
-        return (PlayerPrefs.GetString("Date_" + position), PlayerPrefs.GetInt("Score_"+position));
+        LoadLeaderBoard();
     }
 
     public void AddNewScore(int score)
@@ -45,6 +37,14 @@ public class LeaderBoard : MonoBehaviour
         }
 
         LeaderBoardData[index] = (System.DateTime.Now.ToString(), score);
+    }
+
+    private void LoadLeaderBoard()
+    {
+        for (int i = 0; i < LeaderBoardData.Length; i++)
+        {
+            LeaderBoardData[i] = (PlayerPrefs.GetString("Date_" + i), PlayerPrefs.GetInt("Score_" + i)); ;
+        }
     }
 
     private void SaveLeaderBoard()

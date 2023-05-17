@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ControlsManager : MonoBehaviour
@@ -14,8 +13,6 @@ public class ControlsManager : MonoBehaviour
 
     private InGameControls InGameControls;
 
-    private Coroutine GameLoopCoroutine;
-
     private void Awake()
     {
         Instance = this;
@@ -28,11 +25,11 @@ public class ControlsManager : MonoBehaviour
 
         InGameControls.Movement.RotateRight.performed += _ => Playfield.TryRotate(Tetromino.RIGHT);
 
-        InGameControls.Movement.MoveRight.performed += _ => StartMoving();
+        InGameControls.Movement.MoveRight.performed += _ => StartUniqueCoroutine("MovementTick");
 
-        InGameControls.Movement.MoveLeft.performed += _ => StartMoving();
+        InGameControls.Movement.MoveLeft.performed += _ => StartUniqueCoroutine("MovementTick");
 
-        InGameControls.Movement.SoftDrop.performed += _ => StartFalling();
+        InGameControls.Movement.SoftDrop.performed += _ => StartUniqueCoroutine("FallTick");
 
         InGameControls.Movement.HardDrop.performed += _ => Playfield.HardDrop();
 
@@ -54,35 +51,29 @@ public class ControlsManager : MonoBehaviour
 
         MenuManager = GameMenuManager.Instance;
 
-        GameLoopCoroutine = StartCoroutine(GameTick());
+        StartUniqueCoroutine("GameTick");
     }
 
     public void PauseGame()
     {
         InGameControls.Disable();
 
-        StopCoroutine(GameLoopCoroutine);
+        StopCoroutine("GameTick");
     }
 
     public void ResumeGame()
     {
         InGameControls.Enable();
 
-        GameLoopCoroutine = StartCoroutine(GameTick());
+        StartUniqueCoroutine("GameTick");
     }
 
-    private void StartMoving()
+
+    private void StartUniqueCoroutine(string coroutine)
     {
-        StopCoroutine("MovementTick");
+        StopCoroutine(coroutine);
 
-        StartCoroutine("MovementTick");
-    }
-
-    private void StartFalling()
-    {
-        StopCoroutine("FallTick");
-
-        StartCoroutine("FallTick");
+        StartCoroutine(coroutine);
     }
 
     IEnumerator MovementTick()
@@ -95,13 +86,12 @@ public class ControlsManager : MonoBehaviour
             {
                 Playfield.TryMove(Vector2.left);
             }
-
-            if (InGameControls.Movement.MoveRight.IsPressed())
+            else if (InGameControls.Movement.MoveRight.IsPressed())
             {
                 Playfield.TryMove(Vector2.right);
             }
 
-            yield return new WaitForSeconds(isTheFirstMove ? 0.1f : 0.1f);
+            yield return new WaitForSeconds(isTheFirstMove ? 0.13f : 0.1f);
 
             isTheFirstMove = false;
         }
@@ -113,8 +103,7 @@ public class ControlsManager : MonoBehaviour
         {
             Playfield.TryMoveDown();
 
-            StopCoroutine(GameLoopCoroutine);
-            GameLoopCoroutine = StartCoroutine(GameTick());
+            StartUniqueCoroutine("GameTick");
 
             yield return new WaitForSeconds(0.05f);
         }
@@ -124,7 +113,7 @@ public class ControlsManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds( (60f-Score.Level*2) / 60);
+            yield return new WaitForSeconds((60f - Score.Level * 2) / 60);
 
             Playfield.TryMoveDown();
         }

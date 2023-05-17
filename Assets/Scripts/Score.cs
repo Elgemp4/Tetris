@@ -13,8 +13,6 @@ public class Score : MonoBehaviour
 
     public int Level { private set; get; }
 
-    public bool HasLeveledUp { private set; get; }
-
     [SerializeField]
     private GameObject TextObject;
 
@@ -42,7 +40,6 @@ public class Score : MonoBehaviour
     {
         int scoreBase = BaseScoreForBreakedLine[numberOfClearedLines];
 
-        this.HasLeveledUp = false;
 
         this.ScoreCount += scoreBase * (Level + 1);
 
@@ -56,9 +53,6 @@ public class Score : MonoBehaviour
     public void ComputeLevel()
     {
         int temp = Math.Min(30, ClearedLineCount / 10);
-
-        if (temp > Level)
-            HasLeveledUp = true;
 
         Level = temp;
     }

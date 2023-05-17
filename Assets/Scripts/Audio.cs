@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Audio : MonoBehaviour
@@ -8,9 +8,11 @@ public class Audio : MonoBehaviour
     [SerializeField]
     AudioClip[] Musics;
 
+    private Dictionary<ESoundEffects, AudioSource> _SoundEffects;
+
     private int PlayingMusicIndex = 0;
 
-
+    #region Audios
     [SerializeField]
     AudioSource MoveAudio;
 
@@ -37,69 +39,57 @@ public class Audio : MonoBehaviour
 
     [SerializeField]
     AudioSource MusicPlayer;
+    #endregion
 
     void Start()
     {
         Instance = this;
+
+        _SoundEffects = new Dictionary<ESoundEffects, AudioSource>()
+        {
+            {ESoundEffects.Rotate, RotateAudio},
+            {ESoundEffects.Move, MoveAudio},
+            {ESoundEffects.HardDrop, HardDropAudio},
+            {ESoundEffects.Hold, HoldAudio},
+            {ESoundEffects.SingleLineCleared, SingleLineClearedAudio},
+            {ESoundEffects.DoubleLineCleared, DoubleLineClearedAudio},
+            {ESoundEffects.TripleLineCleared, TripleLineClearedAudio},
+            {ESoundEffects.TetrisLineCleared, TetrisLineClearedAudio},
+        };
     }
 
     void FixedUpdate()
     {
-        MoveAudio.volume = DataTransferer.EffectVolume;
-
-        RotateAudio.volume = DataTransferer.EffectVolume;
-
-        HardDropAudio.volume = DataTransferer.EffectVolume;
-
-        SingleLineClearedAudio.volume = DataTransferer.EffectVolume;
-
-        DoubleLineClearedAudio.volume = DataTransferer.EffectVolume;
-
-        TripleLineClearedAudio.volume = DataTransferer.EffectVolume;
-
-        TetrisLineClearedAudio.volume = DataTransferer.EffectVolume;
-
-        HoldAudio.volume = DataTransferer.EffectVolume;
+        foreach (AudioSource effect in _SoundEffects.Values)
+        {
+            effect.volume = DataTransferer.EffectVolume;
+        }
 
         MusicPlayer.volume = DataTransferer.MusicVolume;
     }
 
-
-    public void PlayMoveAudio()
+    public void PlaySoundEffect(ESoundEffects eSound)
     {
-        MoveAudio.Play();
-    }
+        AudioSource effect = _SoundEffects[eSound];
 
-    public void PlayRotateAudio()
-    {
-        RotateAudio.Play();
-    }
-
-    public void PlayHardDropAudio()
-    {
-        HardDropAudio.Play();
-    }
-
-    public void PlayHoldAudio()
-    {
-        HoldAudio.Play();
-    }
+        effect.Play();
+    }   
 
     public void PlayLineClear(int numLines)
     {
         switch(numLines) 
         {
             case 1:
-                SingleLineClearedAudio.Play();
+                PlaySoundEffect(ESoundEffects.SingleLineCleared);
                 break;
             case 2:
-                DoubleLineClearedAudio.Play();
+                PlaySoundEffect(ESoundEffects.DoubleLineCleared);
                 break;
             case 3:
-                TripleLineClearedAudio.Play();
+                PlaySoundEffect(ESoundEffects.TripleLineCleared);
                 break;
             case 4:
-                TetrisLineClearedAudio.Play();
+                PlaySoundEffect(ESoundEffects.TetrisLineCleared);
                 break;
         }
     }

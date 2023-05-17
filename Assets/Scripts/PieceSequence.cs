@@ -9,6 +9,17 @@ public class PieceSequence : MonoBehaviour
 
     private List<GameObject> VisisbleTetrominoes;
 
+    private static string[] TetrominoesIndex =
+    {
+        "I_Tetromino",
+        "S_Tetromino",
+        "Z_Tetromino",
+        "L_Tetromino",
+        "J_Tetromino",
+        "T_Tetromino",
+        "O_Tetromino"
+    };
+
     void Start()
     {
         Instance = this;
@@ -22,7 +33,7 @@ public class PieceSequence : MonoBehaviour
             CreateTetrominoBag();
         }
 
-        InstantiateFollowingTetrominoes();
+        InstantiateFirstTetrominoes();
     }
 
     private void CreateTetrominoBag()
@@ -51,39 +62,12 @@ public class PieceSequence : MonoBehaviour
 
     private void CreateTetromino(int index)
     {
-        string choosenTetromino = "";
-
-        switch (index)
-        {
-            case 0:
-                choosenTetromino = "I_Tetromino";
-                break;
-            case 1:
-                choosenTetromino = "S_Tetromino";
-                break;
-            case 2:
-                choosenTetromino = "Z_Tetromino";
-                break;
-            case 3:
-                choosenTetromino = "L_Tetromino";
-                break;
-            case 4:
-                choosenTetromino = "J_Tetromino";
-                break;
-            case 5:
-                choosenTetromino = "T_Tetromino";
-                break;
-            case 6:
-                choosenTetromino = "O_Tetromino";
-                break;
-        }
-
-        
+        string choosenTetromino = TetrominoesIndex[index];
 
         NextTetrominoes.Enqueue(Resources.Load("Tetrominoes/" + choosenTetromino) as GameObject);
     }
 
-    private void InstantiateFollowingTetrominoes()
+    private void InstantiateFirstTetrominoes()
     {
         for (int i = 0; i < 5; i++) 
         {
@@ -100,7 +84,7 @@ public class PieceSequence : MonoBehaviour
         VisisbleTetrominoes.Add(tetrominoe);
     }
 
-    private void ShiftVisibleTetrominoes()
+    private void ShiftUpVisibleTetrominoes()
     { 
         foreach(GameObject tetrominoes in VisisbleTetrominoes)
         {
@@ -111,15 +95,14 @@ public class PieceSequence : MonoBehaviour
     public GameObject GetNextTetromino()
     {
         GameObject nextTetromino = VisisbleTetrominoes[0];
+
         VisisbleTetrominoes.RemoveAt(0);
-
         
-
-        ShiftVisibleTetrominoes();
+        ShiftUpVisibleTetrominoes();
 
         InstintateNextVisibleTetromino(4);
 
-        if(NextTetrominoes.Count + NextTetrominoes.Count <= 7 ) 
+        if(NextTetrominoes.Count + VisisbleTetrominoes.Count <= 7 ) 
         {
             CreateTetrominoBag();
         }

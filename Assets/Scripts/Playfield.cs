@@ -73,7 +73,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            _AudioPlayer.PlayMoveAudio();
+            _AudioPlayer.PlaySoundEffect(ESoundEffects.Move);
             GhostTetromino.ShowAtTheBottom();
         }
     }
@@ -94,7 +94,6 @@ public class Playfield : MonoBehaviour
         {
             CurrentFallingTetromino.Move(Vector2.down);
         }
-
     }
 
     public void HardDrop()
@@ -108,7 +107,7 @@ public class Playfield : MonoBehaviour
 
         _CameraShakeSource.GenerateImpulseWithForce(0.15f);
 
-        _AudioPlayer.PlayHardDropAudio();
+        _AudioPlayer.PlaySoundEffect(ESoundEffects.HardDrop);
     }
 
     public void TryRotate(int direction)
@@ -123,7 +122,7 @@ public class Playfield : MonoBehaviour
         }
         else
         {
-            _AudioPlayer.PlayRotateAudio();
+            _AudioPlayer.PlaySoundEffect(ESoundEffects.Rotate);
             GhostTetromino.ShowAtTheBottom();
         }
     }
@@ -360,7 +359,7 @@ public class Playfield : MonoBehaviour
 
         SetFallingTetromino(newTetromino);
 
-        _AudioPlayer.PlayHoldAudio();
+        _AudioPlayer.PlaySoundEffect(ESoundEffects.Hold);
     }
 
     #endregion
