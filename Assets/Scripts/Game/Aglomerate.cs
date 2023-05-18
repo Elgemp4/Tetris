@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// La classe Aglomerate représente un ensemble de blocs qui sont lié l'un à l'autre.
+/// </summary>
 public class Aglomerate
 {
     private Playfield playfield;
 
     public List<GameObject> blockList = new List<GameObject>();
 
+    /// <summary>
+    /// Constructeur de la class <c>Aglomerate</c>.
+    /// </summary>
+    /// <param name="blockList">Un groupe de bloc liés entre eux</param>
     public Aglomerate(List<GameObject> blockList) 
     {
         playfield = Playfield.Instance;
@@ -15,6 +22,9 @@ public class Aglomerate
         this.blockList = blockList;
     }
 
+    /// <summary>
+    /// Fait descendre tous les blocs jusqu'à ce qu'ils atterissent.
+    /// </summary>
     public void Drop() 
     {
         while (!HasLanded())
@@ -23,6 +33,9 @@ public class Aglomerate
         }
     }
 
+    /// <summary>
+    /// Fait descendre tous les blocs d'une case.
+    /// </summary>
     private void MoveDown()
     { 
         foreach (GameObject block in blockList) 
@@ -31,6 +44,10 @@ public class Aglomerate
         }
     }
 
+    /// <summary>
+    /// Calcule si le groupe de blocs est arrivé en bas du plateau de jeu ou s'il est posé sur un autre groupe de blocs.
+    /// </summary>
+    /// <returns>Vrai si il atteri, faux si il est encore dans les airs</returns>
     public bool HasLanded()
     { 
         foreach(GameObject block in blockList) 
@@ -45,7 +62,4 @@ public class Aglomerate
 
         return false;
     }
-
-
-    
 }

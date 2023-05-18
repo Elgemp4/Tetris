@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// La classe <c>Audio</c> gère les effets sonores et la musique du jeu.
+/// </summary>
 public class Audio : MonoBehaviour
 {
     public static Audio Instance;
@@ -58,6 +61,9 @@ public class Audio : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Vérfie si le volume n'a pas changé dans les paramètres
+    /// </summary>
     void FixedUpdate()
     {
         foreach (AudioSource effect in _SoundEffects.Values)
@@ -68,6 +74,10 @@ public class Audio : MonoBehaviour
         MusicPlayer.volume = DataTransferer.MusicVolume;
     }
 
+    /// <summary>
+    /// Joue l'effet sonore indiqué
+    /// </summary>
+    /// <param name="eSound">Effet sonore devant être joué</param>
     public void PlaySoundEffect(ESoundEffects eSound)
     {
         AudioSource effect = _SoundEffects[eSound];
@@ -75,6 +85,10 @@ public class Audio : MonoBehaviour
         effect.Play();
     }   
 
+    /// <summary>
+    /// Joue l'effet sonore correspondant au nombre de lignes supprimées
+    /// </summary>
+    /// <param name="numLines">Les nombre de lignes supprimées</param>
     public void PlayLineClear(int numLines)
     {
         switch(numLines) 
@@ -94,6 +108,9 @@ public class Audio : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Vérifie si la musique est coupée, si oui il en relance une autre
+    /// </summary>
     private void Update()
     {
         if (PlayingMusicIndex == 0)
@@ -109,6 +126,9 @@ public class Audio : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Mélange la playlist de musiques
+    /// </summary>
     private void ShuffleMusics()
     {
         for (int i = 0; i < Musics.Length; i++)

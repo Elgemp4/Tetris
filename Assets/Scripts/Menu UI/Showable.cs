@@ -14,6 +14,10 @@ public abstract class Showable : MonoBehaviour
         PostStart();
     }
 
+    /// <summary>
+    /// Affiche le menu actuel et cache le menu précédent
+    /// </summary>
+    /// <param name="previousUI">Le menu précédent</param>
     public void ShowMenu(Showable previousUI = null) 
     {
         this.gameObject.SetActive(true);
@@ -28,6 +32,9 @@ public abstract class Showable : MonoBehaviour
         OnShow();
     }
 
+    /// <summary>
+    /// Cache le menu actuel et affiche le menu précédent
+    /// </summary>
     public void HideMenu() 
     {
         this.gameObject.SetActive(false);
@@ -38,7 +45,13 @@ public abstract class Showable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Méthode appelée quand le menu est affiché
+    /// </summary>
     protected virtual void OnShow() { }
 
+    /// <summary>
+    /// Méthode appelée après le start
+    /// </summary>
     protected virtual void PostStart() { }
 }

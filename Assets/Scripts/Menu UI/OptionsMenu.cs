@@ -24,11 +24,19 @@ public class OptionsMenu : Showable
         EffectVolumeSlider.value = DataTransferer.EffectVolume;
     }
 
+    /// <summary>
+    /// Modifie le volume de la musique
+    /// </summary>
+    /// <param name="volume">Nouveau volume de la musique entre 0 et 1</param>
     public void ModifyMusicVolume(float volume)
     {
         DataTransferer.SetMusicVolume(volume);
     }
 
+    /// <summary>
+    /// Modifie le volume des effets sonores
+    /// </summary>
+    /// <param name="volume">Nouveau volume des effets sonores entre 0 et 1</param>
     public void ModifyEffectVolume(float volume)
     {
         DataTransferer.SetEffectVolume(volume);

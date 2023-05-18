@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// La class <c>LeaderBoard</c> gère le tableau des scores et leurs stockage en mémoire
+/// </summary>
 public class LeaderBoard : MonoBehaviour
 {
     public static LeaderBoard Instance { get; private set; }
@@ -15,6 +18,10 @@ public class LeaderBoard : MonoBehaviour
         LoadLeaderBoard();
     }
 
+    /// <summary>
+    /// Insère le nouveau score dans le tableau LeaderBoardData
+    /// </summary>
+    /// <param name="score">Le score devant être ajouté</param>
     public void AddNewScore(int score)
     {
         for (int i = 0; i < LeaderBoardData.Length; i++)
@@ -29,6 +36,11 @@ public class LeaderBoard : MonoBehaviour
         SaveLeaderBoard();
     }
 
+    /// <summary>
+    /// Insère le score à l'index donné
+    /// </summary>
+    /// <param name="index">L'index où le score doit être inséré</param>
+    /// <param name="score">Le score devant être inséré</param>
     private void InsertAt(int index, int score)
     {
         for (int i = LeaderBoardData.Length-1; i > index; i--)
@@ -39,6 +51,9 @@ public class LeaderBoard : MonoBehaviour
         LeaderBoardData[index] = (System.DateTime.Now.ToString(), score);
     }
 
+    /// <summary>
+    /// Charge le tableau des score depuis <c>PlayerPrefs</c>
+    /// </summary>
     private void LoadLeaderBoard()
     {
         for (int i = 0; i < LeaderBoardData.Length; i++)
@@ -47,6 +62,9 @@ public class LeaderBoard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sauvegarde le tableau des scores dans <c>PlayerPrefs</c>
+    /// </summary>
     private void SaveLeaderBoard()
     { 
         for(int i = 0; i < LeaderBoardData.Length; i++) 

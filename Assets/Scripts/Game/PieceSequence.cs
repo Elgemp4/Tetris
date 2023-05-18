@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// La class <c>PieceSequence</c> gère la génération et le stockage des prochains <c>Tetromino</c>
+/// </summary>
 public class PieceSequence : MonoBehaviour
 {
     public static PieceSequence Instance;
@@ -8,6 +11,8 @@ public class PieceSequence : MonoBehaviour
     private Queue<GameObject> NextTetrominoes;
 
     private List<GameObject> VisisbleTetrominoes;
+
+    private const float TETROMINOES_GAP = 3f;
 
     private static string[] TetrominoesIndex =
     {
@@ -30,13 +35,16 @@ public class PieceSequence : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            CreateTetrominoBag();
+            AddTetrominoBag();
         }
 
         InstantiateFirstTetrominoes();
     }
 
-    private void CreateTetrominoBag()
+    /// <summary>
+    /// Ajoute 7 <c>Tetromino</c> dans un ordre aléatoire à la séquence de <c>Tetromino</c>
+    /// </summary>
+    private void AddTetrominoBag()
     {
         int[] bag = new int[7];
         
@@ -60,6 +68,10 @@ public class PieceSequence : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Crée un <c>Tetromino</c> à partir de son index
+    /// </summary>
+    /// <param name="index">Index du <c>Tetromino</c> à créer</param>
     private void CreateTetromino(int index)
     {
         string choosenTetromino = TetrominoesIndex[index];
@@ -67,6 +79,9 @@ public class PieceSequence : MonoBehaviour
         NextTetrominoes.Enqueue(Resources.Load("Tetrominoes/" + choosenTetromino) as GameObject);
     }
 
+    /// <summary>
+    /// Instancie les 5 premiers <c>Tetromino</c> de la séquence à des fins d'affichage
+    /// </summary>
     private void InstantiateFirstTetrominoes()
     {
         for (int i = 0; i < 5; i++) 
@@ -75,23 +90,34 @@ public class PieceSequence : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instancie le prochain <c>Tetromino</c> de la séquence à des fins d'affichage
+    /// </summary>
+    /// <param name="position">Position dans l'affichage</param>
     private void InstintateNextVisibleTetromino(int position)
     {
         GameObject tetrominoe = Instantiate(NextTetrominoes.Dequeue());
 
-        tetrominoe.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - 3 * position);
+        tetrominoe.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - TETROMINOES_GAP * position);
 
         VisisbleTetrominoes.Add(tetrominoe);
     }
 
+    /// <summary>
+    /// Décale les <c>Tetromino</c> affichés vers le haut
+    /// </summary>
     private void ShiftUpVisibleTetrominoes()
     { 
         foreach(GameObject tetrominoes in VisisbleTetrominoes)
         {
-            tetrominoes.transform.position += Vector3.up * 3f;
+            tetrominoes.transform.position += Vector3.up * TETROMINOES_GAP;
         }
     }
 
+    /// <summary>
+    /// Retourne le prochain <c>Tetromino</c> de la séquence et l'enlève de celle-ci
+    /// </summary>
+    /// <returns></returns>
     public GameObject GetNextTetromino()
     {
         GameObject nextTetromino = VisisbleTetrominoes[0];
@@ -104,7 +130,7 @@ public class PieceSequence : MonoBehaviour
 
         if(NextTetrominoes.Count + VisisbleTetrominoes.Count <= 7 ) 
         {
-            CreateTetrominoBag();
+            AddTetrominoBag();
         }
 
         return nextTetromino;

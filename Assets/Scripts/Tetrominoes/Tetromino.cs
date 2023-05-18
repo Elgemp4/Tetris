@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Cette classe abstraite représente un <c>Tetromino</c>.
+/// </summary>
 public abstract class Tetromino : MonoBehaviour
 {
     public const int LEFT = -1, RIGHT = 1;
@@ -29,23 +32,38 @@ public abstract class Tetromino : MonoBehaviour
         InstantiateBlocks();
     }
 
-    public void ChangePosition(Vector2 newPosition)
+    /// <summary>
+    /// Défini la position du <c>Tetromino</c>
+    /// </summary>
+    /// <param name="newPosition"></param>
+    public void SetPosition(Vector2 newPosition)
     {
         transform.position = newPosition;
 
         ActualizeBlockPosition();
     }
 
+    /// <summary>
+    /// Défini la position du <c>Tetromino</c> à sa position de départ
+    /// </summary>
     public void SetAtStart()
     {
-        ChangePosition(StartPosition);
+        SetPosition(StartPosition);
     }
 
+    /// <summary>
+    /// Déplace le <c>Tetromino</c> dans la direction donnée
+    /// </summary>
+    /// <param name="direction">Un vecteur représentant la direction du mouvement</param>
     public void Move(Vector2 direction) 
     {
-        ChangePosition((Vector2)this.transform.position + direction);
+        SetPosition((Vector2)this.transform.position + direction);
     }
 
+    /// <summary>
+    /// Tourne le <c>Tetromino</c> dans la direction donnée
+    /// </summary>
+    /// <param name="direction">Un nombre représentant la rotation</param>
     public void Rotate(int direction)
     {
         int modulus = rotations.GetLength(0);
@@ -55,6 +73,9 @@ public abstract class Tetromino : MonoBehaviour
         ActualizeBlockPosition();
     }
 
+    /// <summary>
+    /// Réinitialise la rotation du <c>Tetromino</c> à celle d'origine
+    /// </summary>
     public void ResetRotation()
     {
         RotationIndex = 0;
@@ -62,6 +83,9 @@ public abstract class Tetromino : MonoBehaviour
         ActualizeBlockPosition();
     }
 
+    /// <summary>
+    /// Instancie l'ensemble des blocs du <c>Tetromino</c>
+    /// </summary>
     protected void InstantiateBlocks()
     {
         blocks = new GameObject[NumberOfBlock];
@@ -76,6 +100,9 @@ public abstract class Tetromino : MonoBehaviour
         ActualizeBlockPosition();
     }
 
+    /// <summary>
+    /// Actualise la position des blocs du <c>Tetromino</c> selon la position du celui-ci
+    /// </summary>
     protected void ActualizeBlockPosition()
     {
         if (blocks == null || blocks.Length == 0)
@@ -91,7 +118,14 @@ public abstract class Tetromino : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Retourne la couleur du <c>Tetromino</c>
+    /// </summary>
+    /// <returns>La couleur du <c>Tetromino</c></returns>
     protected abstract Color GetColor();
 
+    /// <summary>
+    /// Génère les rotations du <c>Tetromino</c>
+    /// </summary>
     protected abstract void GenerateRotations();
 }

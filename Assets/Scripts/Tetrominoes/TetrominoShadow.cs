@@ -1,9 +1,16 @@
 using UnityEngine;
 
-public class Ghost_Tetromino : Tetromino
+/// <summary>
+/// Cette class représente l'ombre d'un <c>Tetromino</c>, autrement dit, il indique l'endroit où se posera le <c>Tetromino</c>.
+/// </summary>
+public class TetrominoShadow : Tetromino
 {
     private Tetromino Replicated_Tetromino = null;
 
+    /// <summary>
+    /// Défini le <c>Tetromino</c> dont l'ombre sera affiché.
+    /// </summary>
+    /// <param name="tetromino">Le <c>Tetromino</c> à repliquer</param>
     public void SetReplicated_Tetromino(Tetromino tetromino) 
     {
         Replicated_Tetromino = tetromino;
@@ -17,9 +24,12 @@ public class Ghost_Tetromino : Tetromino
         InstantiateBlocks();
     }
 
-    public void ShowAtTheBottom()
+    /// <summary>
+    /// Déplace l'ombre le plus bas possible.
+    /// </summary>
+    public void MoveAtTheBottom()
     {
-        this.ChangePosition(Replicated_Tetromino.transform.position);
+        this.SetPosition(Replicated_Tetromino.transform.position);
 
         this.RotationIndex = Replicated_Tetromino.RotationIndex;
 
@@ -31,6 +41,9 @@ public class Ghost_Tetromino : Tetromino
         }
     }
 
+    /// <summary>
+    /// Réinitialise l'ombre.
+    /// </summary>
     public void Reset()
     {
         if (blocks == null)
