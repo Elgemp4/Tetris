@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameOverMenu : Showable
+public class GameOverMenu : Menu
 {
     public static GameOverMenu Instance;
 

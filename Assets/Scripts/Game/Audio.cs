@@ -15,6 +15,31 @@ public class Audio : MonoBehaviour
 
     private int PlayingMusicIndex = 0;
 
+    public static float MusicVolume
+    {
+        get
+        {
+            return PlayerPrefs.GetFloat("MusicVolume", 1f);
+        }
+        set
+        {
+            PlayerPrefs.SetFloat("MusicVolume", value);
+        }
+
+    }
+
+    public static float EffectVolume
+    {
+        get
+        {
+            return PlayerPrefs.GetFloat("EffectVolume", 1f);
+        }
+        set
+        {
+            PlayerPrefs.SetFloat("EffectVolume", value);
+        }
+    }
+
     #region Audios
     [SerializeField]
     AudioSource MoveAudio;
@@ -68,10 +93,10 @@ public class Audio : MonoBehaviour
     {
         foreach (AudioSource effect in _SoundEffects.Values)
         {
-            effect.volume = DataTransferer.EffectVolume;
+            effect.volume = EffectVolume;
         }
 
-        MusicPlayer.volume = DataTransferer.MusicVolume;
+        MusicPlayer.volume = MusicVolume;
     }
 
     /// <summary>

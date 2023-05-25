@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : Showable
+public class PauseMenu : Menu
 {
     public static PauseMenu Instance;
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class Showable : MonoBehaviour 
+public abstract class Menu : MonoBehaviour 
 {
-    private Showable previousUI = null;
+    private Menu PreviousMenu = null;
 
     private void Start()
     {
@@ -17,16 +17,16 @@ public abstract class Showable : MonoBehaviour
     /// <summary>
     /// Affiche le menu actuel et cache le menu précédent
     /// </summary>
-    /// <param name="previousUI">Le menu précédent</param>
-    public void ShowMenu(Showable previousUI = null) 
+    /// <param name="previousMenu">Le menu précédent</param>
+    public void ShowMenu(Menu previousMenu = null) 
     {
         this.gameObject.SetActive(true);
 
-        if(previousUI != null) 
+        if(previousMenu != null) 
         { 
-            this.previousUI = previousUI;
+            this.PreviousMenu = previousMenu;
 
-            previousUI.HideMenu();
+            previousMenu.HideMenu();
         }
 
         OnShow();
@@ -39,9 +39,9 @@ public abstract class Showable : MonoBehaviour
     {
         this.gameObject.SetActive(false);
 
-        if(previousUI != null)
+        if(PreviousMenu != null)
         {
-            previousUI.ShowMenu();
+            PreviousMenu.ShowMenu();
         }
     }
 

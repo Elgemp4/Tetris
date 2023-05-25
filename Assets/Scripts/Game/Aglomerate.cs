@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// La classe Aglomerate représente un ensemble de blocs qui sont lié l'un à l'autre.
+/// La classe Aglomerate représente un ensemble de blocs qui sont lié l'un à l'autre. 
 /// </summary>
 public class Aglomerate
 {

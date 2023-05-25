@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class LeaderBoardMenu : Showable
+public class LeaderBoardMenu : Menu
 {
     public static LeaderBoardMenu Instance { get; private set; }
 

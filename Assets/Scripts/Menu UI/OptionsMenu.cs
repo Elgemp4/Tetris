@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionsMenu : Showable
+public class OptionsMenu : Menu
 {
     public static OptionsMenu Instance { get; private set; }
 
@@ -17,11 +17,8 @@ public class OptionsMenu : Showable
     {
         Instance = this;
 
-        DataTransferer.SetMusicVolume(PlayerPrefs.GetFloat("MusicVolume"));
-        DataTransferer.SetEffectVolume(PlayerPrefs.GetFloat("EffectVolume"));
-
-        MusicVolumeSlider.value = DataTransferer.MusicVolume;
-        EffectVolumeSlider.value = DataTransferer.EffectVolume;
+        MusicVolumeSlider.value = Audio.MusicVolume;
+        EffectVolumeSlider.value = Audio.EffectVolume;
     }
 
     /// <summary>
@@ -30,7 +27,7 @@ public class OptionsMenu : Showable
     /// <param name="volume">Nouveau volume de la musique entre 0 et 1</param>
     public void ModifyMusicVolume(float volume)
     {
-        DataTransferer.SetMusicVolume(volume);
+        Audio.MusicVolume = volume;
     }
 
     /// <summary>
@@ -39,6 +36,6 @@ public class OptionsMenu : Showable
     /// <param name="volume">Nouveau volume des effets sonores entre 0 et 1</param>
     public void ModifyEffectVolume(float volume)
     {
-        DataTransferer.SetEffectVolume(volume);
+        Audio.EffectVolume = volume;
     }
 }

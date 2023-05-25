@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : Showable
+public class MainMenu : Menu
 {
-    private Showable OptionsUI;
+    private Menu OptionsUI;
 
-    private Showable LeaderBoardUI;
+    private Menu LeaderBoardUI;
 
     protected override void PostStart()
     {
